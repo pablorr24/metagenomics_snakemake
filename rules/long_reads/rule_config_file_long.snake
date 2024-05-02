@@ -1,0 +1,10 @@
+#This rule generates a copy of the config file in the output folder - for tracking of the parameters 
+
+rule generate_config_file:
+    output: "{wd}/output/long_reads/{rs}/long_config_{ts}.yaml"
+    run:
+        #Create a copy of the config file
+        with open(output[0], 'w') as f:
+            ts = time.strftime("%d%b%Y", time.gmtime())
+            yaml.dump(config_file, f, default_flow_style=False, Dumper=yaml.Dumper, sort_keys=False)
+        print(f"Generated config file: {output[0]}")

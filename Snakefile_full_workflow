@@ -1,0 +1,154 @@
+#snakemake -s Snakefile_full_workflow --cores all
+
+#libraries, packages
+import yaml
+import os
+import time
+from collections import OrderedDict 
+import re
+import sys
+
+from scripts.gzip_to_fq import decompress_files #script to decompress .fq.gz files
+from scripts.alpha_diversity import write_results_to_file, shannons_alpha, berger_parkers_alpha, simpsons_alpha, fishers_alpha, calculate_all_indices   
+
+def decompress_samples_in_path(path_to_samples):
+    decompress_files(path_to_samples)
+
+#Timestamp for resulting folder
+timestamp = time.strftime("%d-%b-%Y-%H", time.localtime())
+#Define result folder with timestamp
+result_folder = f"FullWorkflow_{timestamp}"
+
+#Parameters needed in config file
+try:
+    with open("config_templates/config_short_reads.yaml") as config_file:
+        config_file = yaml.load(config_file, Loader=yaml.FullLoader)
+
+    # Check if the required parameters are present in the config file
+    if 'working_directory' not in config_file:
+        std.err.write( """\n \n 
+    \nParameter 'working_directory' not found in the config file \n 
+Check the documentation for the configuration of the config file \n \n""")
+        raise KeyError()
+    
+    #Paths in config file
+    working_dir = config_file['working_directory']
+    db_path = config_file['database_path']
+    path_to_samples = config_file['sample_path']
+
+    decompress_samples_in_path(path_to_samples) #in case there are .fq.gz files in the sample folder
+
+    files = os.listdir(path_to_samples)
+    
+    for file in files:
+        if file.endswith('.fastq'):
+            old_path = os.path.join(path_to_samples, file)
+            new_file = file.replace('.fastq', '.fq')
+            new_path = os.path.join(path_to_samples, new_file)
+            os.rename(old_path, new_path)
+    
+    # Filter files that end with '_R1.fq' and extract the sample names
+    samples = list(set([re.sub(r'_[12]\.fq$', '', file) for file in files if file.endswith('.fq')]))
+
+
+    sys.stderr.write("Samples Found: ")
+    sys.stderr.write(str(samples))
+    
+    #rule trimmomatic
+    trimmomatic_params = config_file.get('trimmomatic_params', {})
+    #checkpoint kraken2_paired
+    kraken_params = config_file.get('kraken_params', {})
+    #alpha diversity index
+    alpha_diversity = config_file.get('alpha_diversity', {})    
+    #taxonomic_level
+    level = (config_file['otu_table_level'].capitalize())
+    taxonomic_level = level
+
+
+except FileNotFoundError:
+    print("\n \n \n Config file not found. You should have a file called config_short_reads.yaml in your working directory \n \n \n")
+
+except KeyError as e:
+    print(f"Error: {e}")
+
+#This functions is used to store the location of the kraken2 results. 
+#It is used in the post_checkpoint function
+def post_checkpoint(wildcards):
+    return expand("{wd}/output/short_reads/{rs}/{sample}/kraken2/paired/{sample}_kraken2_report.txt", sample=samples, wd=working_dir, rs=result_folder)
+
+
+### SNAKEMAKE RULES ###
+
+# This rule runs all the rules
+rule all:
+    input:
+        #fastqc
+        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/{sample}_1_fastqc.html", sample=samples, wd=working_dir, rs=result_folder, path_to_samples=path_to_samples),
+        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/{sample}_1_fastqc.zip", sample=samples, wd=working_dir,rs=result_folder, path_to_samples=path_to_samples),
+        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/{sample}_2_fastqc.html", sample=samples, wd=working_dir, rs=result_folder, path_to_samples=path_to_samples),
+        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/{sample}_2_fastqc.zip", sample=samples, wd=working_dir, rs=result_folder, path_to_samples=path_to_samples),
+        #trimmomatic
+        expand("{wd}/output/short_reads/{rs}/{sample}/trimmomatic/{sample}_trimmed_data_paired_forward.fastq", sample=samples, wd=working_dir, rs=result_folder),
+        expand("{wd}/output/short_reads/{rs}/{sample}/trimmomatic/{sample}_trimmed_data_paired_reverse.fastq", sample=samples, wd=working_dir, rs=result_folder),
+        expand("{wd}/output/short_reads/{rs}/{sample}/trimmomatic/{sample}_trimmed_data_unpaired_forward.fastq", sample=samples, wd=working_dir, rs=result_folder),
+        expand("{wd}/output/short_reads/{rs}/{sample}/trimmomatic/{sample}_trimmed_data_unpaired_reverse.fastq", sample=samples, wd=working_dir, rs=result_folder),
+        #generate_config_file
+        expand("{wd}/output/short_reads/{rs}/config_{ts}.yaml", wd=working_dir, ts=timestamp, rs=result_folder),
+        #Kraken2 - paired
+        expand("{wd}/output/short_reads/{rs}/{sample}/kraken2/paired/{sample}_kraken2_report.txt", sample=samples, wd=working_dir, rs=result_folder, level=level),
+        expand("{wd}/output/short_reads/{rs}/{sample}/kraken2/paired/{sample}_kraken2_output.txt", sample=samples, wd=working_dir, rs=result_folder, level=level),
+        #Kraken2 - unpaired
+        #expand("{wd}/output/short_reads/{rs}/{sample}/kraken2/unpaired/{sample}_kraken2_report_un.txt", sample=samples, wd=working_dir, rs=result_folder),
+        #expand("{wd}/output/short_reads/{rs}/{sample}/kraken2/unpaired/{sample}_kraken2_output_un.txt", sample=samples, wd=working_dir, rs=result_folder)
+        #Krona graph
+        expand("{wd}/output/short_reads/{rs}/{sample}/viz/{sample}_krona_graph.html", wd=working_dir, ts=timestamp, rs=result_folder, sample=samples),
+        #Taxonomy Plot
+        expand("{wd}/output/short_reads/{rs}/{sample}/viz/{sample}_taxplot_{taxlvl}.jpg", wd=working_dir, ts=timestamp, rs=result_folder, sample=samples, taxlvl=taxonomic_level),     
+        #OTU table
+        expand("{wd}/output/short_reads/{rs}/otu_table_{lv}.csv", wd=working_dir, lv=level, rs=result_folder),
+        #Alpha diversity
+        expand("{wd}/output/short_reads/{rs}/{sample}/alpha_diversity/{sample}_alpha_diversity.txt", sample=samples, wd=working_dir, rs=result_folder),
+        #Rarefaction curve
+        expand("{wd}/output/short_reads/{rs}/rarefaction_curve.jpg", wd=working_dir, rs=result_folder),
+        #Citation
+        expand("{wd}/output/short_reads/{rs}/short_reads_citation.txt", wd=working_dir, rs=result_folder),        
+        #list kraken paths  - file paths used in post analysis
+        expand("{wd}/output/short_reads/{rs}/kraken_report_paths.txt", wd=working_dir, rs=result_folder),
+
+
+#Check individual rules in rules folder for more details
+
+#This rule generates a copy of the config file in the output folder - for tracking of the parameters 
+include: "rules/short_reads/rule_generate_config_file.snake"
+
+#This rule takes the R1 and R2 fastq files runs quality control
+#Outputs html and zip for each sample
+include: "rules/short_reads/rule_fastqc.snake"
+
+#This rule runs trimmomatic on the samples
+include: "rules/short_reads/rule_trimmomatic.snake"
+
+#This checkpoint runs kraken2 on the paired reads
+#This is a checkpoint because the kraken_report files are then used to generate the otu table
+include: "rules/short_reads/checkpoint_kraken2_paired.snake"
+
+#This rule runs after the checkpoint and generates a temp file with the paths to the kraken reports'
+include: "rules/short_reads/rule_post_check.snake"
+
+#This rule creates an otu table from the kraken reports using the kraken2OTU.py script
+include: "rules/short_reads/rule_create_otu_table.snake"
+
+#This rule calculates alpha diversity based on different indices
+include: "rules/short_reads/rule_calculate_alpha_diversity.snake"
+
+#This rule generates a Krona graph from the kreport file
+include: "rules/short_reads/rule_krona_graph.snake"
+
+# This rule plots the most common classified reads per selected taxonomy using R
+include: "rules/short_reads/rule_taxonomy_plot.snake"
+
+#This rule generates a rarefaction curve from the kraken reports
+include: "rules/short_reads/rule_rarefaction_curve.snake"
+
+#This rule generates a citation document for the short-reads workflow
+include: "rules/short_reads/rule_citation_short.snake"

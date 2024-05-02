@@ -1,0 +1,16 @@
+#This rule calculates the alpha diversity of the kraken report files
+#Available options for alpha are: "Shannon", "Berger-Parker", "Simpson", "Fisher's" or "all"
+#Use the following parameters: "Sh", "BP", "Si", "F", "all"
+
+rule calculate_alpha_diversity_long:
+    input:
+        kraken_report=rules.centrifuge_kreport.output.kreport
+    output:
+        alpha_diversity_file="{wd}/output/long_reads/{rs}/{sample}/alpha_diversity/{sample}_alpha_diversity.txt"
+    params:
+        alpha= alpha_diversity
+    shell:
+        """
+        python3 scripts/alpha_diversity.py -f {input.kraken_report} --output {output.alpha_diversity_file} --alpha {params.alpha}
+        """
+        

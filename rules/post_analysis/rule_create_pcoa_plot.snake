@@ -1,0 +1,14 @@
+#This rule generates the PCoA plot based on the beta diversity file. Can use metadata file to color the #plot
+
+rule pcoa_plot:
+    input:
+        distance_matrix = rules.calculate_beta_diversity.output.beta_diversity_file
+    output:
+        pcoa_plot = "{wd}/output/post_analysis/{rs}/PCOA_plot.jpg"
+    params:
+        meta = meta_config, #metadata file
+        var = metadata_variable_config #metadata classification variable
+    shell:
+        """
+        Rscript scripts/PCoA.R --input={input.distance_matrix} --output={output.pcoa_plot} --metadata={params.meta} --variable={params.var}
+        """

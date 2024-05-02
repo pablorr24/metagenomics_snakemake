@@ -1,0 +1,18 @@
+#This rule creates an OTU table from the kraken reports
+#based on the taxonomic level selected
+
+rule create_otu_table:
+    input:
+        #File path of kraken reports that are used to generate the otu table
+        kraken_report_paths=rules.post_check_rule.output.list_kraken_paths
+    output:
+        otu_table="{wd}/output/short_reads/{rs}/otu_table_{lv}.csv"
+    params:
+        lv=level, 
+        outputfolder="{wd}/output/short_reads/{rs}/"
+    #threads: workflow.cores * 0.25
+    shell:
+        """
+        echo "CREATING OTU TABLE"
+        python3 scripts/kraken2OTU.py --reportpathsfile {input.kraken_report_paths} --level {params.lv} --outputfolder {params.outputfolder}
+        """

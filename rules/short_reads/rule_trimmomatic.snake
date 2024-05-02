@@ -1,0 +1,36 @@
+#This rule runs trimmomatic on the samples - for sequence trimming and adapter removal
+
+rule trimmomatic:
+    input:
+        forward1=f"{path_to_samples}/{{sample}}_1.fq",
+        reverse1=f"{path_to_samples}/{{sample}}_2.fq"
+    output: 
+        paired_forward="{wd}/output/short_reads/{rs}/{sample}/trimmomatic/{sample}_trimmed_data_paired_forward.fastq",
+        unpaired_forward="{wd}/output/short_reads/{rs}/{sample}/trimmomatic/{sample}_trimmed_data_unpaired_forward.fastq", 
+        paired_reverse="{wd}/output/short_reads/{rs}/{sample}/trimmomatic/{sample}_trimmed_data_paired_reverse.fastq",
+        unpaired_reverse="{wd}/output/short_reads/{rs}/{sample}/trimmomatic/{sample}_trimmed_data_unpaired_reverse.fastq"
+    params:
+        ADAPTERS= trimmomatic_params.get("ADAPTERS", None),  # Default to None if no adapters are specified
+        LEADING = trimmomatic_params.get("LEADING",3),
+        TRAILING = trimmomatic_params.get("TRAILING", 3),
+        SLIDINGWINDOW = trimmomatic_params.get("SLIDINGWINDOW", "4:15"),
+        MINLEN = trimmomatic_params.get("MINLEN", 36)
+    shell:
+        """
+        if [ -z "{params.ADAPTERS}" ]; then
+            trimmomatic PE \
+                "{input.forward1}" "{input.reverse1}" \
+                "{output.paired_forward}" "{output.unpaired_forward}" \
+                "{output.paired_reverse}" "{output.unpaired_reverse}" \
+                LEADING:{params.LEADING} TRAILING:{params.TRAILING} SLIDINGWINDOW:{params.SLIDINGWINDOW} MINLEN:{params.MINLEN}
+        else
+            trimmomatic PE \
+                "{input.forward1}" "{input.reverse1}" \
+                "{output.paired_forward}" "{output.unpaired_forward}" \
+                "{output.paired_reverse}" "{output.unpaired_reverse}" \
+                ILLUMINACLIP:"{params.ADAPTERS}":2:30:10 \
+                LEADING:{params.LEADING} TRAILING:{params.TRAILING} SLIDINGWINDOW:{params.SLIDINGWINDOW} MINLEN:{params.MINLEN}
+        fi
+        echo 'Trimmomatic rule ran successfully for {wildcards.sample}'
+        """
+

@@ -1,0 +1,22 @@
+working_directory: "/home/pablorr24/snake_folder"
+
+#Path to the already classified results from running the full workflow
+#classification_results: "/home/pablorr24/snake_folder/output/KEEP_resultFullWorkflow21-Feb-2024-11"
+classification_results: /home/pablorr24/snake_folder/output/short_reads/FullWorkflow_24-Apr-2024-23
+
+#Metadata
+metadata_path: "/home/pablorr24/snake_folder/data/metadata_23Apr.csv" #file with metadata info
+#metadata_path: "/home/pablorr24/snake_folder/data/testmetadata.csv" #file with metadata info
+metadata_variable: "GroupName" #variable used for visualizations
+
+otu_table_recalculation_level: 'F' #not yet implemented
+
+beta_diversity_level: "all" #'all', 'S', 'G', 'F', 'O'
+
+#Create the following visualizations 
+#not yet implemented
+PCoA: "Yes" 
+HEATMAP: "Yes"
+DENDOGRAM: "Yes"
+
+exclude_samples:  #not yet implemeted

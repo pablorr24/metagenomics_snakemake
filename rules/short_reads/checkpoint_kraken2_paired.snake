@@ -1,0 +1,23 @@
+#This checkpoint runs kraken2 on the paired reads and generates a krona graph
+#This is a checkpoint because the kraken_report files are then used to generate the otu table
+
+checkpoint kraken2_paired:
+    input: 
+        #Takes the paired_forward and paired_reverse files from trimmomatic rule
+        paired_forward= rules.trimmomatic.output.paired_forward,
+        paired_reverse= rules.trimmomatic.output.paired_reverse,
+        database_path = db_path
+    output:
+	#a kraken report and kraken output files
+        kraken_report="{wd}/output/short_reads/{rs}/{sample}/kraken2/paired/{sample}_kraken2_report.txt",
+        classified="{wd}/output/short_reads/{rs}/{sample}/kraken2/paired/{sample}_kraken2_output.txt",
+    params:
+        CONFIDENCE_INTERVAL= kraken_params.get("CONFIDENCE_INTERVAL", "0.2"),
+        MIN_BASE_QUALITY = kraken_params.get("MIN_BASE_QUALITY", "0"),
+    #threads: workflow.cores * 0.75
+    shell: 
+        """
+        kraken2 --db {input.database_path} --threads {threads} --report {output.kraken_report} \
+        --output {output.classified} --confidence {params.CONFIDENCE_INTERVAL}  \
+        --minimum-base-quality {params.MIN_BASE_QUALITY} --paired {input.paired_forward} {input.paired_reverse}
+        """

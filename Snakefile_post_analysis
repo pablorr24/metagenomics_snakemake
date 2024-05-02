@@ -1,0 +1,92 @@
+#snakemake -s Snakefile_post_analysis --cores all
+
+#libraries, packages
+import yaml
+import os
+import time
+from collections import OrderedDict 
+import re
+import sys
+import glob
+
+from scripts.check_metadata import check_metadata_file
+from scripts.beta_diversity import calculate_bray_curtis
+
+
+#helps find path to kraken report paths
+def kraken_report_paths(wildcards):
+    # List possible filenames
+    possible_files = glob.glob(f"{classification_res}/kraken_report_paths.txt")
+    if possible_files:
+        return possible_files[0]
+    else:
+        raise FileNotFoundError("No kraken report paths found.")
+
+
+#Timestamp for resulting folder
+timestamp = time.strftime("%d-%b-%Y-%H", time.localtime())
+#Define result folder with timestamp
+result_folder = f"resultPostAnalysis{timestamp}"
+
+#Parameters needed in config file
+try:
+    with open("config_templates/config_post_analysis.yaml") as config_file:
+        config_file = yaml.load(config_file, Loader=yaml.FullLoader)
+    
+    #Paths in config file
+    working_dir = config_file['working_directory']
+    #Path to the clasification results that are now being used for post_analysis
+    classification_res = config_file['classification_results'] 
+    
+    #beta diversity index
+    beta_diversity_level = config_file.get('beta_diversity_level', {})
+
+    meta_config = config_file.get('metadata_path', {})
+    metadata_variable_config = config_file.get('metadata_variable', {})
+
+except FileNotFoundError:
+    print("\n \n \n Config file not found. You should have a file called config_post_analysis.yaml in your working directory \n \n \n")
+
+except KeyError as e:
+    print(f"Error: {e}")
+
+#Check metadata file - separate script
+check_metadata_file()
+
+### SNAKEMAKE RULES ###
+
+# This rule runs all the rules
+rule all:
+    input:
+        #generate_config_file
+        expand("{wd}/output/post_analysis/{rs}/config_post_analysis{ts}.yaml", wd=working_dir, ts=timestamp, rs=result_folder),  
+        #PCoA plot
+        expand("{wd}/output/post_analysis/{rs}/PCOA_plot.jpg", wd=working_dir, rs=result_folder),
+        #Dendogram
+        expand("{wd}/output/post_analysis/{rs}/dendogram.jpg", wd=working_dir, rs=result_folder),
+        #Sequence bar chart
+        expand("{wd}/output/post_analysis/{rs}/NumSeqPerSample.png", wd=working_dir, rs=result_folder),
+        #Beta diversity
+        expand("{wd}/output/post_analysis/{rs}/beta_diversity.csv", wd=working_dir, rs=result_folder),
+        #Citation
+        expand("{wd}/output/post_analysis/{rs}/post_analysis_citation.txt", wd=working_dir, rs=result_folder),
+
+#### RULES ###
+
+#This rule generates a copy of the config file in the output folder - for tracking of the parameters 
+include: "rules/post_analysis/rule_generate_config_file_post_analysis.snake"
+
+#This rule calculates beta diversity with Bray-Curtis dissimilarity
+include: "rules/post_analysis/rule_calculate_beta_diversity.snake"
+
+#This rule generates a dendogram plot based on the beta diversity file. Can use metadata file to color the plot
+include: "rules/post_analysis/rule_create_dendogram.snake"
+
+# Rule to create a sequence bar chart showing the number of sequences per sample
+include:"rules/post_analysis/rule_sequence_bar_chart.snake"
+
+#This rule generates a citation document for the long-reads workflow
+include: "rules/post_analysis/rule_post_analysis_citation.snake"
+
+#This rule generates the PCoA plot based on the beta diversity file. Can use metadata file to color the plot
+include: "rules/post_analysis/rule_create_pcoa_plot.snake"

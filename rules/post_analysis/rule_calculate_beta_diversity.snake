@@ -1,0 +1,13 @@
+#This rule calculates beta diversity with Bray-Curtis dissimilarity
+
+checkpoint calculate_beta_diversity:
+    input:
+        txt_file = kraken_report_paths
+    output:
+        beta_diversity_file="{wd}/output/post_analysis/{rs}/beta_diversity.csv"
+    params:
+        beta_level= beta_diversity_level
+    shell:
+        """
+        python3 scripts/beta_diversity.py -i {input.txt_file} --output {output.beta_diversity_file} --level {params.beta_level} --type kreport2
+        """

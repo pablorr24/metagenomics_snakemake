@@ -1,0 +1,26 @@
+#This rule uses nanofilt to filter the reads
+
+rule nanofilt:
+    input:
+        nano_input = f"{path_to_samples}/{{sample}}.fastq"
+    output:
+        filtered_sample = "{wd}/output/long_reads/{rs}/{sample}/nanofilt/filtered_{sample}.fastq"
+    threads: workflow.cores * 0.25
+    params:
+        #Required Parameters
+        LENGTH = nanofilt_params.get("LENGTH",500),
+        QUALITY = nanofilt_params.get("QUALITY",10),
+        #Optional Parameters
+        MAXLENGTH = nanofilt_params.get("MAXLENGTH",9999999),
+        MINGC = nanofilt_params.get("MINGC",0), #between 0 and 1
+        MAXGC = nanofilt_params.get("MAXGC",1), #between 0 and 1
+        HEADCROP = nanofilt_params.get("HEADCROP",0),
+        TAILCROP = nanofilt_params.get("TAILCROP",0)
+    shell:
+        """
+        echo 'Running nanofilt rule for {wildcards.sample}'
+        NanoFilt {input.nano_input} --quality {params.QUALITY} --length {params.LENGTH} \
+        --maxlength {params.MAXLENGTH} --minGC {params.MINGC} --maxGC {params.MAXGC} \
+        --headcrop {params.HEADCROP} --tailcrop {params.TAILCROP} \
+        > {output.filtered_sample}
+        """

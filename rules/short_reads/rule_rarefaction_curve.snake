@@ -1,0 +1,13 @@
+#This rule generates a rarefaction curve from the kraken reports, by the taxonomic level selected
+
+rule rarefaction_curve:
+    input:
+        kraken_report_paths=rules.post_check_rule.output.list_kraken_paths
+    output:
+        rarefaction_plot = "{wd}/output/short_reads/{rs}/rarefaction_curve.jpg"
+    params:
+        taxlvl = taxonomic_level
+    shell:
+        """
+        python3 scripts/rarefaction_curve.py --input {input.kraken_report_paths} --taxlevel {params.taxlvl} --output {output.rarefaction_plot}
+        """

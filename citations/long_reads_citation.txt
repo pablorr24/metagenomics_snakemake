@@ -1,0 +1,16 @@
+Long-reads Workflow
+
+Rules 
+The rule ‘calculate_alpha_diversity’ uses a modified version of the ‘alpha_diversity.py’ script created by GitHub user jenniferlu717 in the DiversityTools repository, available in https://github.com/jenniferlu717/KrakenTools/blob/master/DiversityTools/alpha_diversity.py
+
+Extenal Software
+
+NanoFilt and NanoPlot
+Wouter De Coster, Svenn D’Hert, Darrin T Schultz, Marc Cruts, Christine Van Broeckhoven, NanoPack: visualizing and processing long-read sequencing data, Bioinformatics, Volume 34, Issue 15, August 2018, Pages 2666–2669, https://doi.org/10.1093/bioinformatics/bty149
+
+Centrifuge
+Kim D, Song L, Breitwieser FP, Salzberg SL. Centrifuge: rapid and sensitive classification of metagenomic sequences. Genome Res. 2016 Dec;26(12):1721-1729. doi: 10.1101/gr.210641.116. Epub 2016 Oct 17. PMID: 27852649; PMCID: PMC5131823.
+
+Krona
+Ondov, B.D., Bergman, N.H. & Phillippy, A.M. Interactive metagenomic visualization in a Web browser. BMC Bioinformatics 12, 385 (2011). https://doi.org/10.1186/1471-2105-12-385
+

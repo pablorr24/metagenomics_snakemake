@@ -1,0 +1,15 @@
+#This rule generates the heatmap based on the beta diversity file. Can use metadata file to color the plot
+rule heatmap:
+    input:
+        distance_matrix = get_distance_matrix
+    output:
+        heatmap = "{wd}/output/post_analysis/{rs}/heatmap.jpg"  
+    params:
+        cres = classification_res, 
+        meta = meta_config,
+        var = metadata_variable_config
+    shell:
+        """
+        Rscript scripts/Heatmap.R --input={input.distance_matrix} --output={output.dendogram} --metadata={params.meta} --variable={params.var}
+        """
+

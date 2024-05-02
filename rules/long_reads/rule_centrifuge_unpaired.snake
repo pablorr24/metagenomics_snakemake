@@ -1,0 +1,20 @@
+#This rule takes the filtered reads from nanofilt and classifies them using centrifuge
+
+rule centrifuge_unpaired:
+    input:
+        filtered_sample = rules.nanofilt.output,
+    output:
+        centrifuge_classified = "{wd}/output/long_reads/{rs}/{sample}/centrifuge/{sample}_centrifuge_unpaired.tsv"
+    #threads: workflow.cores * 0.75
+    params:
+        centrifuge_db = db_path,
+        min_hitlen = centrifuge_params.get('min_hitlen', 22),
+        max_hits = centrifuge_params.get('max_hits', 5) #k
+    shell:
+        """
+        centrifuge -x {params.centrifuge_db}/ex_silva \
+        -U {input.filtered_sample} \
+        --report-file {output.centrifuge_classified} \
+        --min-hitlen {params.min_hitlen} \
+        -k {params.max_hits} \
+        """

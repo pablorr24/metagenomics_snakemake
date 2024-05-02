@@ -1,0 +1,6 @@
+#This rule generates a citation document for the post-analysis workflow
+
+rule citation:
+    input: "{wd}/citations/post_analysis_citation.txt"
+    output: "{wd}/output/post_analysis/{rs}/post_analysis_citation.txt"
+    shell: "cp {input} {output}"

@@ -1,0 +1,13 @@
+#This rule runs after the checkpoint and generates a file with the paths to the kraken reports
+
+rule post_check_rule_long:
+    input:
+        #Inputs are the kraken reports from the checkpoint
+        kraken_reports=post_checkpoint_long
+    output:
+    	list_kraken_paths = "{wd}/output/long_reads/{rs}/kraken_report_paths.txt"
+    run:
+    #Generate txt file with paths to kraken reports
+        with open(output[0], "w") as f:
+            for report in input.kraken_reports:
+                print(report, file=f)

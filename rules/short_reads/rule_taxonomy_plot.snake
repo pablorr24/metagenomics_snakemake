@@ -1,0 +1,12 @@
+# This rule plots the most common classified reads per selected taxonomy using R
+# by taxonomic level
+
+rule taxonomy_plot:
+    input:
+        kraken_report = rules.kraken2_paired.output.kraken_report
+    output:
+        tax_plot = "{wd}/output/short_reads/{rs}/{sample}/viz/{sample}_taxplot_{taxlvl}.jpg"
+    params:
+    	taxlvl = taxonomic_level
+    #threads: workflow.cores * 0.25
+    shell: "Rscript {wildcards.wd}/scripts/plot_taxonomy.R {input.kraken_report} {output.tax_plot} {params.taxlvl}"

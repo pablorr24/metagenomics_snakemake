@@ -1,0 +1,5 @@
+#This rule generates a citation document for the shorts-reads workflow
+rule citation:
+    input: "{wd}/citations/short_reads_citation.txt"
+    output: "{wd}/output/short_reads/{rs}/short_reads_citation.txt"
+    shell: "cp {input} {output}"

@@ -1,0 +1,11 @@
+# Rule to create a sequence bar chart showing the number of sequences per sample
+
+rule create_sequence_bar_chart:
+    input:
+        #Kraken Report paths from the previous run
+        txt_file = kraken_report_paths
+    output:
+        stackedbarchart = "{wd}/output/post_analysis/{rs}/NumSeqPerSample.png"
+    shell:
+        "python scripts/stackedbarchart.py --input {input.txt_file} --output {output.stackedbarchart}"
+

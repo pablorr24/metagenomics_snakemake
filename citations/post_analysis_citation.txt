@@ -1,0 +1,7 @@
+Post-Analysis Workflow
+
+Rules
+The rules ‘create_dendogram’ and ‘create_pcoa_plot’ use a modified_version of the ‘dendro.R’ and ‘pca.R’ created by GitHub user GATB in the simka repository, both available in https://github.com/GATB/simka/tree/master/scripts/visualization
+
+The rule ‘calculate_beta_diversity’ uses a modified version of the ‘beta_diversity.py’ script created by GitHub user jenniferlu717 in the DiversityTools repository, available in https://github.com/jenniferlu717/KrakenTools/blob/master/DiversityTools/beta_diversity.py
+

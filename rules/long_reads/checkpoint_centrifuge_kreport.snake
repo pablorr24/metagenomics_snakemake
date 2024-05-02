@@ -1,0 +1,15 @@
+#This checkpoint generates a kraken2 report from the centrifuge output
+#the obhejctive of this is to get a standardize report for both short and long-reads
+
+checkpoint centrifuge_kreport:
+    input:
+        cent_classified = rules.centrifuge_unpaired.output.centrifuge_classified,
+    output:
+        kreport = "{wd}/output/long_reads/{rs}/{sample}/centrifuge/{sample}_kraken2_report.txt"
+    params:
+        centrifuge_db = db_path
+    shell:
+        """
+        centrifuge-kreport -x {params.centrifuge_db}/ex_silva \
+        {input.cent_classified} > {output.kreport}
+        """

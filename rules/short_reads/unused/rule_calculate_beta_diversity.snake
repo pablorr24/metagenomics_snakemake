@@ -1,0 +1,12 @@
+#This rule calculates beta diversity with Bray-Curtis dissimilarity #full workflow
+rule calculate_beta_diversity:
+    input:
+        kraken_report_paths=rules.post_check_rule.output.list_kraken_paths
+    output:
+        beta_diversity_file="{wd}/output/short_reads/{rs}/beta_diversity_{bdl}.csv"
+    params:
+        beta_level= beta_diversity_level
+    shell:
+        """
+        python3 scripts/beta_diversity.py -i {input.kraken_report_paths} --output {output.beta_diversity_file} --level {params.beta_level} --type kreport2
+        """

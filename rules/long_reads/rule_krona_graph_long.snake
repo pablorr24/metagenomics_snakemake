@@ -1,0 +1,11 @@
+#This rule generates a Krona graph from the kreport file
+
+rule krona_graph_long:
+    input:
+        kraken_report = rules.centrifuge_kreport.output.kreport
+    output:
+        krona_graph = "{wd}/output/long_reads/{rs}/{sample}/viz/{sample}_krona.html"
+    shell:
+        """
+        ktImportTaxonomy {input.kraken_report} -o {output.krona_graph}
+        """

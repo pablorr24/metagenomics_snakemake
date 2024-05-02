@@ -1,0 +1,30 @@
+working_directory: /home/pablorr24/snake_folder
+
+database_path: "/home/pablorr24/snake_folder/databases/silva/centrifuge"
+#database_path:  "/home/pablorr24/Documents/silva_for_centrifuge"
+
+#sample_path: /home/pablorr24/snake_folder/data/long_reads
+sample_path: /home/pablorr24/Documents/benchmarking_files/long_reads_benchmarking/data #/10_zymo_ont.fastq
+
+nanofilt_parameters:
+  LENGTH: 50
+  QUALITY: 10
+#Optional Parameteres
+  MAXLENGTH: 99999999
+  MINGC: 0
+  MAXGC: 1
+  HEADCROP: 0
+  TAILCROP: 0
+  
+  
+#Centrifuge
+centrifuge_parameters:
+  #min_hitlen: 1 
+  max_hits: 10 #k 
+  
+#Diversity
+alpha_diversity: "all" #options: all, Shannon, Simpson, Fischer, BP (Berger-Parkers) 
+
+#Taxonomic Level
+otu_table_level: "G"
+#taxonomic_level:  "G"  

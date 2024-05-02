@@ -1,0 +1,11 @@
+#This rule generates a Krona graph from the kraken report file
+
+rule krona_graph:
+    input:
+        kraken_report = rules.kraken2_paired.output.kraken_report
+    output:
+        krona_graph = "{wd}/output/short_reads/{rs}/{sample}/viz/{sample}_krona_graph.html",
+    shell:
+        """
+        ktImportTaxonomy {input.kraken_report} -o {output.krona_graph}
+        """

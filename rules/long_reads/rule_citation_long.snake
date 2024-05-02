@@ -1,0 +1,5 @@
+#This rule generates a citation document for the long-reads workflow
+rule citation:
+    input: "{wd}/citations/long_reads_citation.txt"
+    output: "{wd}/output/long_reads/{rs}/long_reads_citation.txt"
+    shell: "cp {input} {output}"

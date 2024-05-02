@@ -1,0 +1,87 @@
+#snakemake -s Snakefile_fastqc --cores all
+
+#libraries, packages
+import yaml
+import os
+import time
+from collections import OrderedDict 
+import re
+import sys
+
+from scripts.gzip_to_fq import decompress_files #includes script to decompress .fq.gz files
+
+def decompress_samples_in_path(path_to_samples):
+    decompress_files(path_to_samples)
+
+
+#Timestamp for resulting folder
+timestamp = time.strftime("%d-%b-%Y-%H", time.localtime())
+#Define result folder with timestamp
+result_folder = f"FastQCresult{timestamp}"
+
+#Parameters needed in config file
+try:
+    with open("config.yaml") as config_file:
+        config_file = yaml.load(config_file, Loader=yaml.FullLoader)
+
+    # Check if the required parameters are present in the config file
+    if 'working_directory' not in config_file:
+        print("""\n \n 
+    \nParameter 'working_directory' not found in the config file \n 
+Check the documentation for the configuration of the config file \n \n""")
+        raise KeyError()
+    
+    #Paths in config file
+    working_dir = config_file['working_directory']
+    path_to_samples = config_file['sample_path']
+
+    decompress_samples_in_path(path_to_samples)
+
+    files = os.listdir(path_to_samples)
+
+    # Filter files that end with '_R1.fq' and extract the sample names
+    samples = list(set([re.sub(r'_[12]\.fq$', '', file) for file in files if file.endswith('.fq')]))
+
+except FileNotFoundError:
+    print("\n \n \n Config file not found. You should have a file called config.yaml in your working directory \n \n \n")
+
+except KeyError as e:
+    print(f"Error: {e}")
+
+
+### SNAKEMAKE RULES ###
+
+# This rule runs all the rules
+rule all:
+    input:
+        #fastqc
+        expand("{wd}/output/{rs}/{sample}/fastqc/{sample}_1_fastqc.html", sample=samples, wd=working_dir, rs=result_folder, path_to_samples=path_to_samples),
+        expand("{wd}/output/{rs}/{sample}/fastqc/{sample}_1_fastqc.zip", sample=samples, wd=working_dir,rs=result_folder, path_to_samples=path_to_samples),
+        expand("{wd}/output/{rs}/{sample}/fastqc/{sample}_2_fastqc.html", sample=samples, wd=working_dir, rs=result_folder, path_to_samples=path_to_samples),
+        expand("{wd}/output/{rs}/{sample}/fastqc/{sample}_2_fastqc.zip", sample=samples, wd=working_dir, rs=result_folder, path_to_samples=path_to_samples),
+
+
+
+
+#This rule takes the R1 and R2 fastq files runs quality control
+#Outputs html and zip for each sample
+rule fastqc:
+    input:
+        #Input specified in the config file
+        #Always require 2 files per sample (_1 and _2)
+        r1=f"{path_to_samples}/{{sample}}_1.fq",
+        r2=f"{path_to_samples}/{{sample}}_2.fq"
+    output:
+        #4 outputs per sample: 2 html and 2 zip
+        html_r1="{wd}/output/{rs}/{sample}/fastqc/{sample}_1_fastqc.html",
+        zip_r1="{wd}/output/{rs}/{sample}/fastqc/{sample}_1_fastqc.zip",
+        html_r2="{wd}/output/{rs}/{sample}/fastqc/{sample}_2_fastqc.html",
+        zip_r2="{wd}/output/{rs}/{sample}/fastqc/{sample}_2_fastqc.zip"
+    threads: workflow.cores * 0.50
+    shell:
+        """
+        mkdir -p output/{wildcards.rs}/{wildcards.sample}/fastqc &&
+        fastqc {input.r1} --outdir output/{wildcards.rs}/{wildcards.sample}/fastqc &&
+        fastqc {input.r2} --outdir output/{wildcards.rs}/{wildcards.sample}/fastqc &&
+        echo 'FastQC rule ran successfully for {wildcards.sample}'
+        """
