@@ -1,7 +1,0 @@
-#This is a dummy rule to test R scripts
-rule penguin_plot: 
-    input:
-        peng_dataset ="{wd}/data/penguins.csv"
-    output: "{wd}/output/short_reads/{rs}/penguin_plot.pdf"
-    threads: workflow.cores * 0.25
-    shell: "Rscript {wildcards.wd}/scripts/plot_things.r {input} {output}"
