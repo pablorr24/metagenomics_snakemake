@@ -1,0 +1,7 @@
+working_directory: /home/pablorr24/snake_folder
+
+database_path: "/home/pablorr24/snake_folder/databases/greengenes" # greengenes or silva
+
+sample_path: /home/pablorr24/snake_folder/data/short_reads
+#sample_path: /home/pablorr24/Desktop/workflow_test_greengenesG
+
