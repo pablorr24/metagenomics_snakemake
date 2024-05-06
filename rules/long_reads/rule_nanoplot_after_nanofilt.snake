@@ -1,10 +1,9 @@
-#This rule runs nanoplot and generates a report and several visualizations
-
-rule nanoplot:
+#This rule runs nanoplot after trimming
+rule nanoplot_after_nanofilt:
     input: 
-        sample_input= f"{path_to_samples}/{{sample}}.fastq"
+        sample_input= rules.nanofilt.output,
     output:
-        outdir =  directory("{wd}/output/long_reads/{rs}/{sample}/nanoplot/untrimmed")
+        outdir =  directory("{wd}/output/long_reads/{rs}/{sample}/nanoplot/trimmed")
     #threads: workflow.cores * 0.50
     shell: 
         """

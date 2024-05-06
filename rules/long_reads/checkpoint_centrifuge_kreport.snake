@@ -1,5 +1,5 @@
 #This checkpoint generates a kraken2 report from the centrifuge output
-#the obhejctive of this is to get a standardize report for both short and long-reads
+#the objective of this is to get a standardize report for both short and long-reads
 
 checkpoint centrifuge_kreport:
     input:

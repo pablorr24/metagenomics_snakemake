@@ -5,7 +5,7 @@ rule nanofilt:
         nano_input = f"{path_to_samples}/{{sample}}.fastq"
     output:
         filtered_sample = "{wd}/output/long_reads/{rs}/{sample}/nanofilt/filtered_{sample}.fastq"
-    threads: workflow.cores * 0.25
+    #threads: workflow.cores * 0.25
     params:
         #Required Parameters
         LENGTH = nanofilt_params.get("LENGTH",500),

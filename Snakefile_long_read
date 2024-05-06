@@ -39,7 +39,6 @@ Check the documentation for the configuration of the config file \n \n""")
 
     files = os.listdir(path_to_samples)
     samples = [file.rsplit('.', 1)[0] for file in files if file.endswith('.fastq')]
-    #samples = [file.rsplit('.', 1)[0] for file in files if file.endswith('.fastq') or file.endswith('.fq')]
     #nanofilt params
     nanofilt_params = config_file.get('nanofilt_parameters', {})
     #centrifuge params
@@ -68,18 +67,20 @@ def post_checkpoint_long(wildcards):
 rule all:
     input:
         #config file
-        expand("{wd}/output/long_reads/{rs}/long_config_{ts}.yaml", wd = working_dir, rs = result_folder, ts = timestamp),
+        expand("{wd}/output/long_reads/{rs}/long_config_{ts}.yaml", wd = working_dir, rs = result_folder, ts = timestamp),        
+        #nanoplot - before nanofilt
+        expand("{wd}/output/long_reads/{rs}/{sample}/nanoplot/untrimmed", wd = working_dir, rs = result_folder, sample = samples),
         #nanofilt
         expand("{wd}/output/long_reads/{rs}/{sample}/nanofilt/filtered_{sample}.fastq", wd = working_dir, rs = result_folder, sample = samples),
-        #nanoplot
-        expand("{wd}/output/long_reads/{rs}/{sample}/nanoplot/", wd = working_dir, rs = result_folder, sample = samples),
+        #nanoplot - after nanofilt
+        expand("{wd}/output/long_reads/{rs}/{sample}/nanoplot/trimmed", wd = working_dir, rs = result_folder, sample = samples),
         #centrifuge
         expand("{wd}/output/long_reads/{rs}/{sample}/centrifuge/{sample}_centrifuge_unpaired.tsv", wd = working_dir, rs = result_folder, sample = samples),
         #centrifuge kreport
         expand("{wd}/output/long_reads/{rs}/{sample}/centrifuge/{sample}_kraken2_report.txt", wd = working_dir, rs = result_folder, sample = samples),
         #krona graph
         expand("{wd}/output/long_reads/{rs}/{sample}/viz/{sample}_krona.html", wd = working_dir, rs = result_folder, sample = samples), 
-        #list kraken paths  - temp file, not needed, except for testing
+        #list kraken paths 
         expand("{wd}/output/long_reads/{rs}/kraken_report_paths.txt", wd=working_dir, rs=result_folder),    
         #OTU table
         expand("{wd}/output/long_reads/{rs}/otu_table_{lv}.csv", wd=working_dir, lv=level, rs=result_folder),
@@ -99,6 +100,9 @@ include: "rules/long_reads/rule_nanoplot.snake"
 
 #This rule uses nanofilt to filter the reads
 include: "rules/long_reads/rule_nanofilt.snake"
+
+#This rule runs nanoplot after nanofilt and generates a report and several visualizations
+include: "rules/long_reads/rule_nanoplot_after_nanofilt.snake"
 
 #This rule takes the filtered reads and classifies them using centrifuge
 include: "rules/long_reads/rule_centrifuge_unpaired.snake"

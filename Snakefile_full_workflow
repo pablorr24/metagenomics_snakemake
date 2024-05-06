@@ -82,16 +82,21 @@ def post_checkpoint(wildcards):
 # This rule runs all the rules
 rule all:
     input:
-        #fastqc
-        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/{sample}_1_fastqc.html", sample=samples, wd=working_dir, rs=result_folder, path_to_samples=path_to_samples),
-        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/{sample}_1_fastqc.zip", sample=samples, wd=working_dir,rs=result_folder, path_to_samples=path_to_samples),
-        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/{sample}_2_fastqc.html", sample=samples, wd=working_dir, rs=result_folder, path_to_samples=path_to_samples),
-        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/{sample}_2_fastqc.zip", sample=samples, wd=working_dir, rs=result_folder, path_to_samples=path_to_samples),
+        #fastqc - untrimmed
+        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/untrimmed/{sample}_1_fastqc.html", sample=samples, wd=working_dir, rs=result_folder, path_to_samples=path_to_samples),
+        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/untrimmed/{sample}_1_fastqc.zip", sample=samples, wd=working_dir,rs=result_folder, path_to_samples=path_to_samples),
+        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/untrimmed/{sample}_2_fastqc.html", sample=samples, wd=working_dir, rs=result_folder, path_to_samples=path_to_samples),
+        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/untrimmed/{sample}_2_fastqc.zip", sample=samples, wd=working_dir, rs=result_folder, path_to_samples=path_to_samples),
         #trimmomatic
         expand("{wd}/output/short_reads/{rs}/{sample}/trimmomatic/{sample}_trimmed_data_paired_forward.fastq", sample=samples, wd=working_dir, rs=result_folder),
         expand("{wd}/output/short_reads/{rs}/{sample}/trimmomatic/{sample}_trimmed_data_paired_reverse.fastq", sample=samples, wd=working_dir, rs=result_folder),
         expand("{wd}/output/short_reads/{rs}/{sample}/trimmomatic/{sample}_trimmed_data_unpaired_forward.fastq", sample=samples, wd=working_dir, rs=result_folder),
         expand("{wd}/output/short_reads/{rs}/{sample}/trimmomatic/{sample}_trimmed_data_unpaired_reverse.fastq", sample=samples, wd=working_dir, rs=result_folder),
+        #fastqc - trimmed
+        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/trimmed/{sample}_trimmed_data_paired_forward_fastqc.html", sample=samples, wd=working_dir, rs=result_folder, path_to_samples=path_to_samples),
+        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/trimmed/{sample}_trimmed_data_paired_forward_fastqc.zip", sample=samples, wd=working_dir,rs=result_folder, path_to_samples=path_to_samples),
+        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/trimmed/{sample}_trimmed_data_paired_reverse_fastqc.html", sample=samples, wd=working_dir, rs=result_folder, path_to_samples=path_to_samples),
+        expand("{wd}/output/short_reads/{rs}/{sample}/fastqc/trimmed/{sample}_trimmed_data_paired_reverse_fastqc.zip", sample=samples, wd=working_dir, rs=result_folder, path_to_samples=path_to_samples),
         #generate_config_file
         expand("{wd}/output/short_reads/{rs}/config_{ts}.yaml", wd=working_dir, ts=timestamp, rs=result_folder),
         #Kraken2 - paired
@@ -127,6 +132,9 @@ include: "rules/short_reads/rule_fastqc.snake"
 
 #This rule runs trimmomatic on the samples
 include: "rules/short_reads/rule_trimmomatic.snake"
+
+#This rule runs fastqc after trimmomatic to check the quality of the reads after trimming
+include: "rules/short_reads/rule_fastqc_after_trimmomatic.snake"
 
 #This checkpoint runs kraken2 on the paired reads
 #This is a checkpoint because the kraken_report files are then used to generate the otu table

@@ -3,20 +3,16 @@
 
 rule fastqc:
     input:
-        #Input specified in the config file
-        #Always require 2 files per sample (_1.fq and _2.fq)
         r1=f"{path_to_samples}/{{sample}}_1.fq",
         r2=f"{path_to_samples}/{{sample}}_2.fq"
     output:
-        #4 outputs per sample: 2 html and 2 zip
-        html_r1="{wd}/output/short_reads/{rs}/{sample}/fastqc/{sample}_1_fastqc.html",
-        zip_r1="{wd}/output/short_reads/{rs}/{sample}/fastqc/{sample}_1_fastqc.zip",
-        html_r2="{wd}/output/short_reads/{rs}/{sample}/fastqc/{sample}_2_fastqc.html",
-        zip_r2="{wd}/output/short_reads/{rs}/{sample}/fastqc/{sample}_2_fastqc.zip"
-    #threads: workflow.cores * 0.50
+        html_r1="{wd}/output/short_reads/{rs}/{sample}/fastqc/untrimmed/{sample}_1_fastqc.html",
+        zip_r1="{wd}/output/short_reads/{rs}/{sample}/fastqc/untrimmed/{sample}_1_fastqc.zip",
+        html_r2="{wd}/output/short_reads/{rs}/{sample}/fastqc/untrimmed/{sample}_2_fastqc.html",
+        zip_r2="{wd}/output/short_reads/{rs}/{sample}/fastqc/untrimmed/{sample}_2_fastqc.zip"
     shell:
         """
-        fastqc {input.r1} --outdir output/short_reads/{wildcards.rs}/{wildcards.sample}/fastqc &&
-        fastqc {input.r2} --outdir output/short_reads/{wildcards.rs}/{wildcards.sample}/fastqc &&
+        fastqc {input.r1} --outdir output/short_reads/{wildcards.rs}/{wildcards.sample}/fastqc/untrimmed &&
+        fastqc {input.r2} --outdir output/short_reads/{wildcards.rs}/{wildcards.sample}/fastqc/untrimmed &&
         echo 'FastQC rule ran successfully for {wildcards.sample}'
         """
