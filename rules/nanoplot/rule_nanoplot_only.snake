@@ -1,0 +1,14 @@
+#This rule runs nanoplot and generates a report and several visualizations
+
+rule nanoplot:
+    input: 
+        sample_input= f"{path_to_samples}/{{sample}}.fastq"
+    output:
+        outdir =  directory("{wd}/output/long_reads/{rs}/{sample}/nanoplot/")
+    #threads: workflow.cores * 0.50
+    shell: 
+        """
+        echo 'Running nanoplot rule for {wildcards.sample}'
+        NanoPlot --fastq {input.sample_input} --outdir {output.outdir}
+        echo 'nanoplot rule ran successfully for {wildcards.sample}'
+        """

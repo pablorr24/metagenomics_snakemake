@@ -1,0 +1,66 @@
+#snakemake -s Snakefile_nanoplot --cores all
+
+#libraries, packages
+import yaml
+import os
+import time
+from collections import OrderedDict 
+import re
+
+from scripts.gzip_to_fq import decompress_files #script to decompress .fasta.gz files
+
+def decompress_samples_in_path(path_to_samples):
+    decompress_files(path_to_samples)
+
+#Timestamp for resulting folder
+timestamp = time.strftime("%d-%b-%Y-%H", time.localtime())
+#Define result folder with timestamp
+result_folder = f"LongReadsNanoPlot{timestamp}"
+
+#Parameters needed in config file
+try:
+    with open("config_templates/config_long_nanoplot.yaml") as config_file:
+        config_file = yaml.load(config_file, Loader=yaml.FullLoader)
+
+    # Check if the required parameters are present in the config file
+    if 'working_directory' not in config_file:
+        std.err.write( """\n \n 
+    \nParameter 'working_directory' not found in the config file \n 
+Check the documentation for the configuration of the config file \n \n""")
+        raise KeyError()
+    
+    #Paths in config file
+    working_dir = config_file['working_directory']
+    db_path = config_file['database_path']
+    path_to_samples = config_file['sample_path']
+
+    decompress_samples_in_path(path_to_samples) #in case there are .fasta.gz files in the sample folder
+
+    files = os.listdir(path_to_samples)
+    samples = [file.rsplit('.', 1)[0] for file in files if file.endswith('.fastq')]
+    #samples = [file.rsplit('.', 1)[0] for file in files if file.endswith('.fastq') or file.endswith('.fq')]
+except FileNotFoundError:
+    print("\n \n \n Config file not found. You should have a file called config_long_reads.yaml in your working directory \n \n \n")
+except KeyError as e:
+    print(f"Error: {e}")
+
+### SNAKEMAKE RULES ###
+
+# This rule runs all the rules
+rule all:
+    input:
+        #config file
+        expand("{wd}/output/long_reads/{rs}/long_config_nanoplot{ts}.yaml", wd = working_dir, rs = result_folder, ts = timestamp),
+        #nanoplot
+        expand("{wd}/output/long_reads/{rs}/{sample}/nanoplot/", wd = working_dir, rs = result_folder, sample = samples),
+        #Citation
+        expand("{wd}/output/long_reads/{rs}/nanoplot_citation.txt", wd=working_dir, rs=result_folder),
+        
+#This rule creates a copy of the config file for tracking purposes
+include: "rules/nanoplot/rule_config_file_nanoplot.snake"
+
+#This rule runs nanoplot and generates a report and several visualizations
+include: "rules/nanoplot/rule_nanoplot_only.snake"
+
+#This rule generates a citation document for the long-reads workflow
+include: "rules/nanoplot/rule_nanoplot_citation.snake"
