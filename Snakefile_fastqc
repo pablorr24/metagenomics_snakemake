@@ -31,7 +31,6 @@ Check the documentation for the configuration of the config file \n \n""")
     
     #Paths in config file
     working_dir = config_file['working_directory']
-    db_path = config_file['database_path']
     path_to_samples = config_file['sample_path']
 
     decompress_samples_in_path(path_to_samples) #in case there are .fq.gz files in the sample folder

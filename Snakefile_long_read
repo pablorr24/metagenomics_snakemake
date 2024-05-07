@@ -38,7 +38,9 @@ Check the documentation for the configuration of the config file \n \n""")
     decompress_samples_in_path(path_to_samples) #in case there are .fasta.gz files in the sample folder
 
     files = os.listdir(path_to_samples)
-    samples = [file.rsplit('.', 1)[0] for file in files if file.endswith('.fastq')]
+    #samples = [file.rsplit('.', 1)[0] for file in files if file.endswith('.fastq')]
+    samples = [file.rsplit('.', 1)[0] for file in files if file.endswith('.fastq') or file.endswith('.fq')]
+
     #nanofilt params
     nanofilt_params = config_file.get('nanofilt_parameters', {})
     #centrifuge params

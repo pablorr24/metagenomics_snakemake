@@ -31,14 +31,13 @@ Check the documentation for the configuration of the config file \n \n""")
     
     #Paths in config file
     working_dir = config_file['working_directory']
-    db_path = config_file['database_path']
     path_to_samples = config_file['sample_path']
 
     decompress_samples_in_path(path_to_samples) #in case there are .fasta.gz files in the sample folder
 
     files = os.listdir(path_to_samples)
     samples = [file.rsplit('.', 1)[0] for file in files if file.endswith('.fastq')]
-    #samples = [file.rsplit('.', 1)[0] for file in files if file.endswith('.fastq') or file.endswith('.fq')]
+    samples = [file.rsplit('.', 1)[0] for file in files if file.endswith('.fastq') or file.endswith('.fq')]
 except FileNotFoundError:
     print("\n \n \n Config file not found. You should have a file called config_long_reads.yaml in your working directory \n \n \n")
 except KeyError as e:
