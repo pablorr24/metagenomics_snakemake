@@ -5,7 +5,6 @@ channels:
   - defaults
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
-  - kraken2=2.1.3
   - _openmp_mutex=4.5=2_gnu
   - aioeasywebdav=2.4.0=pyha770c72_0
   - aiohttp=3.9.0=py311h5eee18b_0
@@ -20,9 +19,9 @@ dependencies:
   - brotli-python=1.0.9=py311h6a678d5_7
   - bzip2=1.0.8=h7b6447c_0
   - c-ares=1.21.0=hd590300_0
-  - ca-certificates=2023.08.22=h06a4308_0
+  - ca-certificates=2024.3.11=h06a4308_0
   - cachetools=4.2.2=pyhd3eb1b0_0
-  - certifi=2023.11.17=py311h06a4308_0
+  - certifi=2024.2.2=py311h06a4308_0
   - cffi=1.16.0=py311h5eee18b_0
   - charset-normalizer=2.0.4=pyhd3eb1b0_0
   - coin-or-cbc=2.10.10=h9002f0b_0
@@ -105,7 +104,7 @@ dependencies:
   - pandas=2.1.3=py311h320fe9a_0
   - paramiko=2.8.1=pyhd3eb1b0_0
   - peppy=0.35.7=pyhd8ed1ab_0
-  - perl=5.34.0=h5eee18b_2
+  - perl=5.32.1=0_h5eee18b_perl5
   - perl-threaded=5.32.1=hdfd78af_1
   - pip=23.3.1=py311h06a4308_0
   - plac=1.3.4=pyhd3eb1b0_0
