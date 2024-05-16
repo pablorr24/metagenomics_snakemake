@@ -50,18 +50,20 @@ kraken2-build --special greengenes --db greengenes
 
 ### Running a workflow 
 
-To run a workflow, first modify the configuration file and adjust to your parameters. Afterwards, run Snakemake
+For details on the steps of each workflow, see the **workflow_summary** file
+
+To run a workflow, first modify the configuration file and adjust to your parameters. Afterwards, run Snakemake.
 
 ### Short-reads
 ```snakemake -s Snakefile_fastqc --cores all``` \
-```snakemake -s Snakefile_full_workflow --cores all```\
+```snakemake -s Snakefile_full_workflow --cores all``` \
 
 ### Long-reads
 ```snakemake -s Snakefile_nanoplot --cores all``` \
 ```snakemake -s Snakefile_long_read --cores all``` \
 
 ### Post Classification Workflow
-```snakemake -s Snakefile_post_analysis --cores all``` \
+```snakemake -s Snakefile_post_analysis --cores all``` 
 
 **Metadata File** \
 The post-classification workflow requires a metadata file, with one row per sample, and different columns specifying specific sample variables (sample location, species, etc). 

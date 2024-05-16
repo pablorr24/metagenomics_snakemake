@@ -24,7 +24,7 @@ A YAML configuration file is required before running any analysis. There is a sp
 ### Post-Classification workflow
 A **metadata file** is required for the post-classification workflow. This is a csv file, with simple requirements: An identifier column (SampleID) with unique values (one row per sample), and any additional columns with other information about the samples. You can find an example of the metadata file in the **data/metadata folder** 
 
-1.	**Beta diversity** using Bray-Curtis Distance \
-2.	**Number of Sequences per Sample** plot \
-3.	**Principal Coordinate Analysis Plot (PCoA)** colored by metadata variable \
+1.	**Beta diversity** using Bray-Curtis Distance 
+2.	**Number of Sequences per Sample** plot 
+3.	**Principal Coordinate Analysis Plot (PCoA)** colored by metadata variable 
 4.	**Dendrogram** colored by metadata variable
