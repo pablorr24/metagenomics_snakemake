@@ -44,7 +44,7 @@ conda activate snakemake_meta
 If you already have a database such as Silva, Greengenes, RefSeq, Kraken2, or a similar classification database, you can skip this step. Otherwise, make sure you install a database. The following instructions will download and install the Silva database. 
 
 ```
-cd database
+cd databases/
 kraken2-build --special silva --db SilvaDB
 kraken2-build --special greengenes --db greengenes
 ```
@@ -54,6 +54,7 @@ kraken2-build --special greengenes --db greengenes
 For details on the steps of each workflow, see the **workflow_summary** file
 
 To run a workflow, first modify the configuration file and adjust to your parameters. Afterwards, run Snakemake.
+Note: Make sure you are in the working directory (specified in the config file)
 
 ### Short-reads
 ```snakemake -s Snakefile_fastqc --cores all``` \
