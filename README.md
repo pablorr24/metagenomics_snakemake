@@ -49,6 +49,15 @@ kraken2-build --special silva --db SilvaDB
 kraken2-build --special greengenes --db greengenes
 ```
 
+## Update Krona Taxonomy
+
+Before runnung the analysis, the updateTaxonomy.sh file must be run. Navigate to ```home/miniconda3/envs/snakemake_metagenomics/opt/krona```. And run 
+```
+ ./updateTaxonomy.sh
+```
+
+This process may take a couple of minutes.
+
 ### Running a workflow 
 
 For details on the steps of each workflow, see the **workflow_summary** file
