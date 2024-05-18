@@ -19,43 +19,20 @@ timestamp = time.strftime("%d-%b-%Y-%H", time.localtime())
 #Define result folder with timestamp
 result_folder = f"FullWorkflow_{timestamp}"
 
+required_parameters = [
+    'working_directory', 'database_path', 'sample_path',
+    'trimmomatic_params', 'kraken_params', 'alpha_diversity',
+    'otu_table_level']
+
 #Parameters needed in config file
 try:
     with open("config_templates/config_short_reads.yaml") as config_file:
         config_file = yaml.load(config_file, Loader=yaml.FullLoader)
 
-    # Check if the required parameters are present in the config file
-    if 'working_directory' not in config_file:
-        sys.stderr.write("""\n \n Parameter 'working_directory' not found in the config file \n \n """ )
-        raise KeyError()
-    if 'database_path' not in config_file:
-        sys.stderr.write( """\n \n Parameter 'database_path' not found in the config file \n \n""")
-        raise KeyError()
-
-    if 'sample_path' not in config_file:
-        sys.stderr.write( """\n \n 
-    \nParameter 'sample_path' not found in the config file \n \n""")
-        raise KeyError()
-
-    if 'trimmomatic_params' not in config_file:
-        sys.stderr.write( """\n \n 
-    \nParameter 'trimmomatic_params' not found in the config file \n \n""")
-        raise KeyError()
-	
-    if 'kraken_params' not in config_file:
-        sys.stderr.write( """\n \n 
-    \nParameter 'kraken_params' not found in the config file \n \n""")
-        raise KeyError()
-	
-    if 'alpha_diversity' not in config_file:
-        sys.stderr.write( """\n \n 
-    \nParameter 'alpha_diversity' not found in the config file \n \n""")
-        raise KeyError()
-	
-    if 'otu_table_level' not in config_file:
-        sys.stderr.write( """\n \n 
-    \nParameter 'otu_table_level' not found in the config file \n \n""")
-        raise KeyError()
+    for param in required_parameters:
+        if param not in config_file:
+            sys.stderr.write(f"\n\nParameter '{param}' not found in the config file\n\n")
+            raise KeyError(f"Missing required parameter: {param}")
 
     #Paths in config file
     working_dir = config_file['working_directory']
@@ -71,7 +48,7 @@ try:
     level = (config_file['otu_table_level'].capitalize())
     taxonomic_level = level
 
-	# Check if the paths exist
+	# Check if the paths exist.
     if not os.path.exists(working_dir):
         sys.stderr.write(f"\nError: The working directory '{working_dir}' does not exist. \n")
         raise FileNotFoundError(f"Make sure the working directory is correct \n \n")
