@@ -41,26 +41,37 @@ conda activate snakemake_meta
 ```
 ## Database Installation
 
-If you already have a database such as Silva, Greengenes, RefSeq, Kraken2, or a similar classification database, you can skip this step. Otherwise, make sure you install a database. The following instructions will download and install the Silva database
+If you already have a database such as Silva, Greengenes, RefSeq, Kraken2, or a similar classification database, you can skip this step. Otherwise, make sure you install a database. The following instructions will download and install the Silva database. 
 
 ```
+cd databases/
 kraken2-build --special silva --db SilvaDB
 kraken2-build --special greengenes --db greengenes
 ```
+
+## Update Krona Taxonomy
+
+Before runnung the analysis, the updateTaxonomy.sh file must be run. Navigate to ```home/miniconda3/envs/snakemake_metagenomics/opt/krona```. And run 
+```
+ ./updateTaxonomy.sh
+```
+
+This process may take a couple of minutes.
 
 ### Running a workflow 
 
 For details on the steps of each workflow, see the **workflow_summary** file
 
 To run a workflow, first modify the configuration file and adjust to your parameters. Afterwards, run Snakemake.
+Note: Make sure you are in the working directory (specified in the config file)
 
 ### Short-reads
 ```snakemake -s Snakefile_fastqc --cores all``` \
-```snakemake -s Snakefile_full_workflow --cores all``` \
+```snakemake -s Snakefile_full_workflow --cores all``` 
 
 ### Long-reads
 ```snakemake -s Snakefile_nanoplot --cores all``` \
-```snakemake -s Snakefile_long_read --cores all``` \
+```snakemake -s Snakefile_long_read --cores all``` 
 
 ### Post Classification Workflow
 ```snakemake -s Snakefile_post_analysis --cores all``` 
