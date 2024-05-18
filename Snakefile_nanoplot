@@ -17,29 +17,39 @@ timestamp = time.strftime("%d-%b-%Y-%H", time.localtime())
 #Define result folder with timestamp
 result_folder = f"LongReadsNanoPlot{timestamp}"
 
+required_parameters = ['working_directory', 'sample_path']
+
 #Parameters needed in config file
 try:
     with open("config_templates/config_long_nanoplot.yaml") as config_file:
         config_file = yaml.load(config_file, Loader=yaml.FullLoader)
 
-    # Check if the required parameters are present in the config file
-    if 'working_directory' not in config_file:
-        std.err.write( """\n \n 
-    \nParameter 'working_directory' not found in the config file \n 
-Check the documentation for the configuration of the config file \n \n""")
-        raise KeyError()
+    for param in required_parameters:
+        if param not in config_file:
+            sys.stderr.write(f"\n\nParameter '{param}' not found in the config file\n\n")
+            raise KeyError(f"Missing required parameter: {param}")
     
     #Paths in config file
     working_dir = config_file['working_directory']
     path_to_samples = config_file['sample_path']
 
+	# Check if the paths exist
+    if not os.path.exists(working_dir):
+        sys.stderr.write(f"\nError: The working directory '{working_dir}' does not exist. \n")
+        raise FileNotFoundError(f"Make sure the working directory is correct \n \n")
+    
+    if not os.path.exists(path_to_samples):
+        sys.stderr.write(f"\nError: The sample path '{path_to_samples}' does not exist.\n")
+        raise FileNotFoundError(f"Make sure the sample path is correct \n \n")
+	
+	# Decompress samples in path
     decompress_samples_in_path(path_to_samples) #in case there are .fasta.gz files in the sample folder
 
     files = os.listdir(path_to_samples)
-    samples = [file.rsplit('.', 1)[0] for file in files if file.endswith('.fastq')]
     samples = [file.rsplit('.', 1)[0] for file in files if file.endswith('.fastq') or file.endswith('.fq')]
-except FileNotFoundError:
-    print("\n \n \n Config file not found. You should have a file called config_long_reads.yaml in your working directory \n \n \n")
+
+except FileNotFoundError as e:
+    print(f"Error: {e}")
 except KeyError as e:
     print(f"Error: {e}")
 

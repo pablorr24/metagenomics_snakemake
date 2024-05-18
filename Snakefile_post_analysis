@@ -28,25 +28,40 @@ timestamp = time.strftime("%d-%b-%Y-%H", time.localtime())
 #Define result folder with timestamp
 result_folder = f"resultPostAnalysis{timestamp}"
 
+required_parameters = ['working_directory', 'classification_res', "beta_diversity_level",
+                       "metadata_path", "metadata_variable"]
+
 #Parameters needed in config file
 try:
     with open("config_templates/config_post_analysis.yaml") as config_file:
         config_file = yaml.load(config_file, Loader=yaml.FullLoader)
+        
+    # Check if the required parameters are present in the config file
+    for param in required_parameters:
+        if param not in config_file:
+            sys.stderr.write(f"\n\nParameter '{param}' not found in the config file\n\n")
+            raise KeyError(f"Missing required parameter: {param}")
     
     #Paths in config file
     working_dir = config_file['working_directory']
     #Path to the clasification results that are now being used for post_analysis
     classification_res = config_file['classification_results'] 
-    
     #beta diversity index
     beta_diversity_level = config_file.get('beta_diversity_level', {})
-
     meta_config = config_file.get('metadata_path', {})
     metadata_variable_config = config_file.get('metadata_variable', {})
 
-except FileNotFoundError:
-    print("\n \n \n Config file not found. You should have a file called config_post_analysis.yaml in your working directory \n \n \n")
-
+    # Check if the paths exist
+    if not os.path.exists(working_dir):
+        sys.stderr.write(f"\nError: The working directory '{working_dir}' does not exist. \n")
+        raise FileNotFoundError(f"Make sure the working directory is correct \n \n")
+    
+    if not os.path.exists(classification_res):
+        sys.stderr.write(f"\nError: The sample path '{classification_res}' does not exist.\n")
+        raise FileNotFoundError(f"Make sure the sample path is correct \n \n")
+    
+except FileNotFoundError as e:
+    print(f"Error: {e}")
 except KeyError as e:
     print(f"Error: {e}")
 
