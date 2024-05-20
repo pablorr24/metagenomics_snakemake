@@ -9,10 +9,11 @@ rule centrifuge_unpaired:
     params:
         centrifuge_db = db_path,
         min_hitlen = centrifuge_params.get('min_hitlen', 22),
-        max_hits = centrifuge_params.get('max_hits', 5) #k
+        max_hits = centrifuge_params.get('max_hits', 5), #k
+        prefix = prefix,
     shell:
         """
-        centrifuge -x {params.centrifuge_db}/ex_silva \
+        centrifuge -x {params.centrifuge_db}/{prefix} \
         -U {input.filtered_sample} \
         --report-file {output.centrifuge_classified} \
         --min-hitlen {params.min_hitlen} \

@@ -37,6 +37,7 @@ try:
     #Paths in config file
     working_dir = config_file['working_directory']
     db_path = config_file['database_path']
+    prefix = config_file['prefix']
     path_to_samples = config_file['sample_path']
 	#nanofilt params
     nanofilt_params = config_file.get('nanofilt_parameters', {})
