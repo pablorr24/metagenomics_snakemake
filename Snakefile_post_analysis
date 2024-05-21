@@ -16,7 +16,7 @@ from scripts.beta_diversity import calculate_bray_curtis
 #helps find path to kraken report paths
 def kraken_report_paths(wildcards):
     # List possible filenames
-    possible_files = glob.glob(f"{classification_res}/kraken_report_paths.txt")
+    possible_files = glob.glob(f"{classification_results}/kraken_report_paths.txt")
     if possible_files:
         return possible_files[0]
     else:
@@ -28,7 +28,7 @@ timestamp = time.strftime("%d-%b-%Y-%H", time.localtime())
 #Define result folder with timestamp
 result_folder = f"resultPostAnalysis{timestamp}"
 
-required_parameters = ['working_directory', 'classification_res', "beta_diversity_level",
+required_parameters = ['working_directory', 'classification_results', "beta_diversity_level",
                        "metadata_path", "metadata_variable"]
 
 #Parameters needed in config file
@@ -45,7 +45,7 @@ try:
     #Paths in config file
     working_dir = config_file['working_directory']
     #Path to the clasification results that are now being used for post_analysis
-    classification_res = config_file['classification_results'] 
+    classification_results = config_file['classification_results'] 
     #beta diversity index
     beta_diversity_level = config_file.get('beta_diversity_level', {})
     meta_config = config_file.get('metadata_path', {})
@@ -56,8 +56,8 @@ try:
         sys.stderr.write(f"\nError: The working directory '{working_dir}' does not exist. \n")
         raise FileNotFoundError(f"Make sure the working directory is correct \n \n")
     
-    if not os.path.exists(classification_res):
-        sys.stderr.write(f"\nError: The sample path '{classification_res}' does not exist.\n")
+    if not os.path.exists(classification_results):
+        sys.stderr.write(f"\nError: The sample path '{classification_results}' does not exist.\n")
         raise FileNotFoundError(f"Make sure the sample path is correct \n \n")
     
 except FileNotFoundError as e:

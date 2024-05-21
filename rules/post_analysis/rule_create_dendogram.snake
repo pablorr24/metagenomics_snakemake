@@ -6,7 +6,7 @@ rule dendogram:
     output:
         dendogram = "{wd}/output/post_analysis/{rs}/dendogram.jpg"
     params:
-        cres = classification_res, #from previous workflow
+        cres = classification_results, #from previous workflow
         meta = meta_config, #metadata file
         var = metadata_variable_config #metadata classification variable
     shell:
