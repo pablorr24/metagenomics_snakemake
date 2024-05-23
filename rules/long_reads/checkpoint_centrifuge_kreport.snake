@@ -7,9 +7,10 @@ checkpoint centrifuge_kreport:
     output:
         kreport = "{wd}/output/long_reads/{rs}/{sample}/centrifuge/{sample}_kraken2_report.txt"
     params:
-        centrifuge_db = db_path
+        centrifuge_db = db_path,
+        pref = prefix,
     shell:
         """
-        centrifuge-kreport -x {params.centrifuge_db}/ex_silva \
+        centrifuge-kreport -x {params.centrifuge_db}/{params.pref} \
         {input.cent_classified} > {output.kreport}
         """

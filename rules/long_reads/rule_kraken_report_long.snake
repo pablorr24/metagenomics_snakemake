@@ -7,8 +7,9 @@ checkpoint kraken_report_long:
         kreport = "{wd}/output/long_reads/{rs}/{sample}/centrifuge/{sample}_kreport.txt"
     params:
         centrifuge_db = db_path
+        pref = prefix
     shell:
         """
-        centrifuge-kreport -x {params.centrifuge_db}/ex_silva \
+        centrifuge-kreport -x {params.centrifuge_db}/{params.pref} \
         {input.cent_classified} > {output.kreport}
         """

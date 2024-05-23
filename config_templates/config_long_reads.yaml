@@ -4,10 +4,9 @@
 working_directory: /home/pablorr24/snake_folder
 
 database_path: "/home/pablorr24/snake_folder/databases/silva/centrifuge"
-#database_path: "/home/pablorr24/snake_folder/databases/greengenes/centrifuge"
 prefix: "ex_silva"
 
-sample_path: /home/pablorr24/Documents/benchmarking_files/long_reads_benchmarking/data #/10_zymo_ont.fastq
+sample_path: /home/pablorr24/snake_folder/data/long_reads
 
 nanofilt_parameters:
   LENGTH: 50
@@ -29,5 +28,4 @@ centrifuge_parameters:
 alpha_diversity: "all" #options: all, Shannon, Simpson, Fischer, BP (Berger-Parkers) 
 
 #Taxonomic Level
-otu_table_level: "G"
-#taxonomic_level:  "G"  
+otu_table_level: "F" 

@@ -3,7 +3,7 @@
 
 working_directory: /home/pablorr24/snake_folder
 
-database_path: "/home/pablorr24/snake_folder/databases/greengenes" # greengenes or silva
+database_path: "/home/pablorr24/snake_folder/databases/silva" # greengenes or silva
 
 sample_path: /home/pablorr24/snake_folder/data/short_reads
 
@@ -12,7 +12,7 @@ trimmomatic_params:
   TRAILING: 3
   SLIDINGWINDOW: "4:15"
   MINLEN: 36
-  ADAPTERS: /home/pablorr24/snake_folder/data/adapters/TruSeq3-SE.fa #if no adapters are used, select 'None'
+  ADAPTERS: None #/home/pablorr24/snake_folder/data/adapters/TruSeq3-SE.fa #if no adapters are used, select 'None'
 
 kraken_paired: true 
  
@@ -23,5 +23,5 @@ kraken_params:
 alpha_diversity: "all" #options: all, Shannon, Simpson, Fischer, BP (Berger-Parkers) 
 
 #Taxonomic Level to classify samples (S, G, O, C, F) for Species, Class, Order, Genus, Family...
-otu_table_level: "S"
+otu_table_level: "O"
 
