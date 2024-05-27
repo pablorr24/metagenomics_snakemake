@@ -6,8 +6,8 @@ This Snakemake-based program allows an automated classification of metagenomic s
 
 ## Brief Description
 
-The metagenomics workflows were developed using Snakemake Version 7.32.4 on an Ubuntu 22.04.2 LTS environment. The program was developed on an UNIX system and is compatible with Linux and iOS devices. For Windows users, using a Linux virtual environment such as Oracle Virtual Box is required. 
-This program allows to clasify and analyze NGS short-reads sequences from Illumina and long-reads sequences from Oxford Nanopore Technologies (ONT). It consists of 3 workflows: short-reads classification, long-reads classification and post-classification workflow. The short-reads workflow and the long-reads workflow have a QC-only mode, which runs FastQC and NanoPlot respectively. This method is useful to evaluate sequence quality before classification.
+The metagenomics workflows were developed using Snakemake Version 7.32.4 on an Ubuntu 22.04.2 LTS environment. The program was developed on an UNIX system and is compatible with Linux and iOS devices. For Windows users, using a Linux virtual environment such as Oracle Virtual Box is required. \
+This program allows to clasify and analyze NGS short-reads sequences from Illumina and long-reads sequences from Oxford Nanopore Technologies (ONT). It consists of 3 workflows: short-reads classification, long-reads classification and post-classification workflow. The short-reads workflow and the long-reads workflow have a QC-only mode, which runs FastQC and NanoPlot respectively. This method is useful to evaluate sequence quality before classification.\
 The post-classification workflow works on the results of the classification workflows and provides additional information using a metadata file and an additional target variable.
 
 ## Prerequisites
