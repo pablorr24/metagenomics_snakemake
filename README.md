@@ -9,9 +9,9 @@ This Snakemake-based program allows an automated classification of metagenomic s
 The metagenomics workflows were developed using Snakemake Version 7.32.4 on an Ubuntu 22.04.2 LTS environment. The program was developed on an UNIX system and is compatible with Linux and iOS devices. For Windows users, using a Linux virtual environment such as Oracle Virtual Box is required. \
 This program consists of 3 workflows: short-reads classification, long-reads classification and post-classification workflow. The short-reads workflow and the long-reads workflow have a QC-only mode, which runs FastQC and NanoPlot respectively. This method is useful to evaluate sequence quality before classification. The post-classification workflow works on the results of the classification workflows and provides additional information using a metadata file and an additional target variable.
 
-The figure below shows the general steps of each workflow. For a detailed view of the steps in each workflow, check the workflow.MD file. 
-![image](https://github.com/pablorr24/metagenomics_snakemake/assets/92135285/87189b4f-71c9-4910-86d7-ef879114c8d9)
+The figure below shows the general steps of each workflow. For a detailed view of the steps in each workflow, check the **workflow_summary.md** file. 
 
+![image](https://github.com/pablorr24/metagenomics_snakemake/assets/92135285/5898c242-0122-449a-b0a4-f6aa98fde5bf)
 
 
 ## Prerequisites
@@ -79,24 +79,24 @@ This command will generate several files with the format ‘silva_centrifuge.#.c
 
 ### Running a workflow 
 
-For details on the steps of each workflow, see the **workflow_summary** file
+For details on the steps of each workflow, see the **workflow_summary.md** file
 
 To run a workflow, first modify the configuration file and adjust to your parameters. Afterwards, run Snakemake.
 Note: Make sure you are in the working directory (specified in the config file)
 
 ### Short-reads
-```snakemake -s Snakefile_fastqc --cores all``` \
-```snakemake -s Snakefile_full_workflow --cores all``` 
+QC-only: ```snakemake -s Snakefile_fastqc --cores all``` \
+Classification Workflow: ```snakemake -s Snakefile_full_workflow --cores all``` 
 
 ### Long-reads
-```snakemake -s Snakefile_nanoplot --cores all``` \
-```snakemake -s Snakefile_long_read --cores all``` 
+QC-only:```snakemake -s Snakefile_nanoplot --cores all``` \
+Classification Workflow:```snakemake -s Snakefile_long_read --cores all``` 
 
 ### Post Classification Workflow
-```snakemake -s Snakefile_post_analysis --cores all``` 
+**Metadata File** (only for post-classification workflow) \
+The post-classification workflow requires a metadata file, with one row per sample, and different columns specifying specific sample variables (sample location, species, etc). Please update this file before running the analysis
 
-**Metadata File** \
-The post-classification workflow requires a metadata file, with one row per sample, and different columns specifying specific sample variables (sample location, species, etc). 
+```snakemake -s Snakefile_post_analysis --cores all``` 
 
 ### Output 
 
