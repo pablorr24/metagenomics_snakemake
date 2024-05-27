@@ -2,12 +2,12 @@
 
 ## Summary:
 
-This Snakemake-based program allows to classify metagenomic samples from NGS and ONT samples.
+This Snakemake-based program allows an automated classification of metagenomic samples from Illumina and Oxford Nanopore Technologies, as well as an automatic generation of different visualizations, tables and statistics useful in the metagenomics field.
 
 ## Brief Description
 
-The program allows to clasify and analyze NGS sequences and long-read ONT samples.
-The program consists of 3 workflows: short-reads classification, long-reads classification and post-classification workflow.  The short-reads workflow and the long-reads workflow have a QC-only mode, which runs FastQC and NanoPlot respectively. This method is useful to evaluate sequence quality before classification.
+The metagenomics workflows were developed using Snakemake Version 7.32.4 on an Ubuntu 22.04.2 LTS environment. The program was developed on an UNIX system and is compatible with Linux and iOS devices. For Windows users, using a Linux virtual environment such as Oracle Virtual Box is required. 
+This program allows to clasify and analyze NGS short-reads sequences from Illumina and long-reads sequences from Oxford Nanopore Technologies (ONT). It consists of 3 workflows: short-reads classification, long-reads classification and post-classification workflow. The short-reads workflow and the long-reads workflow have a QC-only mode, which runs FastQC and NanoPlot respectively. This method is useful to evaluate sequence quality before classification.
 The post-classification workflow works on the results of the classification workflows and provides additional information using a metadata file and an additional target variable.
 
 ## Prerequisites
@@ -39,15 +39,6 @@ cd metagenomics/Snakemake
 conda env create -f environment.yml -n snakemake_meta
 conda activate snakemake_meta
 ```
-## Database Installation
-
-If you already have a database such as Silva, Greengenes, RefSeq, Kraken2, or a similar classification database, you can skip this step. Otherwise, make sure you install a database. The following instructions will download and install the Silva database. 
-
-```
-cd databases/
-kraken2-build --special silva --db SilvaDB
-kraken2-build --special greengenes --db greengenes
-```
 
 ## Update Krona Taxonomy
 
@@ -57,6 +48,30 @@ Before runnung the analysis, the updateTaxonomy.sh file must be run. Navigate to
 ```
 
 This process may take a couple of minutes.
+
+## Short-reads database installation
+If you already have access to a classification database such as Silva, Greengenes, or Kraken2, you can skip the installation step. Otherwise, make sure you install a database. The following instructions will download and install the Silva and Greengenes databases.
+
+```
+cd databases/
+kraken2-build --special silva --db silvaDB
+kraken2-build --special greengenes --db greengenesDB
+```
+
+## Long-reads database installation 
+For long-read sequences, Centrifuge requires a different database configuration.  If you are using RefSeq, follow these steps:
+
+```
+```
+
+You can also configure a custom database in Centrifuge. This requires a detailed installation. Consult the official documentation for detailed information. The following example will show how to build the previously installed Silva database for use in Centrifuge.
+
+Navigate to the folder where the Silva database is located and type the following command:
+```
+centrifuge-build --conversion-table seqid2taxid.map --taxonomy-tree taxonomy/nodes.dmp --name-table taxonomy/names.dmp library/combined_sequences.fna silva_centrifuge
+```
+This command will generate several files with the format ‘silva_centrifuge.#.cf’, where silva_centeifuge is the prefix you chose on the previous command. This prefix must match the config file parameter ‘prefix’. Other databases may have slightly different file names, but they tend to follow the same naming conventions and file types.
+
 
 ### Running a workflow 
 
