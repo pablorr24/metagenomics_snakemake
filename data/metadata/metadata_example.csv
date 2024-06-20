@@ -1,4 +1,7 @@
 SampleID,GroupName,Species,Site,Repetition
-E58S1,ZoneAntar1,Deschampsia antarctica,S2,1
-E58S3,ZoneAntar1,Deschampsia antarctica,S2,3
-E58S4,ZoneAntar2,Colobanthus quitensis,S2,1
+E58S2,ZoneAntar1,Deschampsia antarctica,S1,1
+E58S3,ZoneAntar1,Deschampsia antarctica,S1,2
+E58S4,ZoneAntar2,Deschampsia antarctica,S2,1
+E58S5,ZoneAntar2,Colobanthus quitensis,S1,2
+E58S6,ZoneAntar2,Colobanthus quitensis,S2,1
+E58S7,ZoneAntar2,Colobanthus quitensis,S2,1

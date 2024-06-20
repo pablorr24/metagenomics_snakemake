@@ -1,8 +1,8 @@
 #Run the long-reads full workflow by configuring these file and typing in the terminal
 #snakemake -s Snakefile_fastqc --cores all 
 
-#working_directory: /home/pablorr24/snake_folder
 working_directory: /home/pablorr24/snake_folder
 
-sample_path: /home/pablorr24/snake_folder/data/short_reads
+sample_path: /home/pablorr24/snake_folder/data/short_reads/lol
+
 

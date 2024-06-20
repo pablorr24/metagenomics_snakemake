@@ -21,7 +21,7 @@ required_parameters = ['working_directory', 'sample_path']
 
 #Parameters needed in config file
 try:
-    with open("config_templates/config_long_nanoplot.yaml") as config_file:
+    with open("config_templates/config_nanoplot_long_reads.yaml") as config_file:
         config_file = yaml.load(config_file, Loader=yaml.FullLoader)
 
     for param in required_parameters:

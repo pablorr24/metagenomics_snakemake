@@ -27,16 +27,30 @@ kraken_report <- kraken_report %>%
     TRUE ~ as.character(TaxLevel)  # Default for other cases
   ))
 
-p <- ggplot(kraken_report, aes(x = reorder(Scientific_Name, -Percentage), y = Percentage, fill = TaxonomicLevel)) +
-  geom_bar(stat = "identity") +
-  labs(x = "Scientific Name", y = "Percentage Abundance", title = "Relative Abundance of Species") +
+# Filter data to display only the selected taxonomic level
+selected_taxonomic_level <- "Phylum"  # Change this to the desired taxonomic level
+
+# Filter the data to include only the top 20 taxa with the highest abundance
+kraken_report <- kraken_report %>%
+  filter(TaxonomicLevel == selected_taxonomic_level) %>%
+  top_n(20, wt = Percentage)
+
+p <- ggplot(kraken_report, aes(x = reorder(Scientific_Name, -Percentage), y = Percentage)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  labs(x = "Scientific Name", y = "Percentage Abundance", title = paste("Top 20 Abundant", selected_taxonomic_level)) +
   theme_minimal() +
   coord_flip() +
   theme(axis.text.y = element_text(size = 12),
         panel.grid.major.y = element_blank(),
         panel.grid.minor.y = element_blank(),
-        plot.title = element_text(hjust = 0.5)) +
-  scale_fill_manual(values = c("Phylum" = "blue", "Class" = "green", "Order" = "red", "Family" = "purple", 
-                               "Genus" = "orange", "Species" = "pink", "R" = "black", "Unassigned"="grey"))
+        plot.title = element_text(hjust = 0.5),
+        # Set background color to white for the plot and all its components
+        plot.background = element_rect(fill = "white"),
+        legend.background = element_rect(fill = "white"),
+        legend.box.background = element_rect(fill = "white"),
+        panel.background = element_rect(fill = "white"),
+        panel.border = element_rect(color = "black", fill = NA),
+        legend.key = element_rect(fill = "white"),
+        panel.spacing = unit(1, "lines"))
 
 ggsave(filename = args[2], plot = p, width = 8, height = 4)

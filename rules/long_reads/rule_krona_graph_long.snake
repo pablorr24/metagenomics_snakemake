@@ -2,10 +2,10 @@
 
 rule krona_graph_long:
     input:
-        kraken_report = rules.centrifuge_kreport.output.kreport
+        kraken_report = rules.centrifuge_unpaired.output.centrifuge_classified
     output:
         krona_graph = "{wd}/output/long_reads/{rs}/{sample}/viz/{sample}_krona.html"
     shell:
         """
-        ktImportTaxonomy {input.kraken_report} -o {output.krona_graph}
+        ktImportTaxonomy -t 2 -m 5 {input.kraken_report} -o {output.krona_graph}
         """

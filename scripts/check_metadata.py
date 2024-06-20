@@ -6,7 +6,7 @@ import sys
 
 def check_metadata_file():
     # Construct the path to the configuration file in the current directory
-    config_path = os.path.join(os.getcwd(), 'config_templates/config_post_analysis.yaml')
+    config_path = os.path.join(os.getcwd(), 'config_templates/config_post_classification.yaml')
     
     # Read configuration from the YAML file
     with open(config_path, 'r') as config_file:
