@@ -1,0 +1,147 @@
+#snakemake -s Snakefile_long_reads_full_workflow --cores all
+
+#libraries, packages
+import yaml
+import os
+import time
+from collections import OrderedDict 
+import re
+
+from scripts.gzip_to_fq import decompress_files #script to decompress .fasta.gz files
+from scripts.alpha_diversity import write_results_to_file, shannons_alpha, berger_parkers_alpha, simpsons_alpha, fishers_alpha, calculate_all_indices   
+
+def decompress_samples_in_path(path_to_samples):
+    decompress_files(path_to_samples)
+
+#Timestamp for resulting folder
+timestamp = time.strftime("%d-%b-%Y-%H", time.localtime())
+#Define result folder with timestamp
+result_folder = f"long_read_res{timestamp}"
+
+required_parameters = [
+    'working_directory', 'database_path', 'sample_path',
+    'nanofilt_parameters', 'centrifuge_parameters', 'alpha_diversity',
+    'otu_table_level']
+
+#Parameters needed in config file
+try:
+    with open("config_templates/config_long_reads_full_workflow.yaml") as config_file:
+        config_file = yaml.load(config_file, Loader=yaml.FullLoader)
+
+    # Check if the required parameters are present in the config file
+    for param in required_parameters:
+        if param not in config_file:
+            sys.stderr.write(f"\n\nParameter '{param}' not found in the config file\n\n")
+            raise KeyError(f"Missing required parameter: {param}")
+		
+    #Paths in config file
+    working_dir = config_file['working_directory']
+    db_path = config_file['database_path']
+    prefix = config_file['prefix']
+    path_to_samples = config_file['sample_path']
+	#nanofilt params
+    nanofilt_params = config_file.get('nanofilt_parameters', {})
+    #centrifuge params
+    centrifuge_params = config_file.get('centrifuge_parameters', {})
+    #alpha diversity index
+    alpha_diversity = config_file.get('alpha_diversity', {})
+    #taxonomic_level
+    level = (config_file['otu_table_level'].capitalize())
+    taxonomic_level = level
+
+	# Check if the paths exist
+    if not os.path.exists(working_dir):
+        sys.stderr.write(f"\nError: The working directory '{working_dir}' does not exist. \n")
+        raise FileNotFoundError(f"Make sure the working directory is correct \n \n")
+    
+    if not os.path.exists(path_to_samples):
+        sys.stderr.write(f"\nError: The sample path '{path_to_samples}' does not exist.\n")
+        raise FileNotFoundError(f"Make sure the sample path is correct \n \n") 
+	
+    if not os.path.exists(db_path):
+        sys.stderr.write(f"\nError: The db path '{db_path}' does not exist.\n")
+        raise FileNotFoundError(f"Make sure the database path is correct \n \n")
+
+    decompress_samples_in_path(path_to_samples) #in case there are .fasta.gz files in the sample folder
+
+    files = os.listdir(path_to_samples)
+    samples = [file.rsplit('.', 1)[0] for file in files if file.endswith('.fastq') or file.endswith('.fq')]
+
+except FileNotFoundError as e:
+    print(f"Error: {e}")
+except KeyError as e:
+    print(f"Error: {e}")
+
+#This functions is used to store the location of the kraken2 results. 
+#It is used in the post_checkpoint function
+def post_checkpoint_long(wildcards):
+    return expand("{wd}/output/long_reads/{rs}/{sample}/centrifuge/{sample}_kraken2_report.txt", sample=samples, wd=working_dir, rs=result_folder)
+
+
+### SNAKEMAKE RULES ###
+
+# This rule runs all the rules
+rule all:
+    input:
+        #config file
+        expand("{wd}/output/long_reads/{rs}/long_config_{ts}.yaml", wd = working_dir, rs = result_folder, ts = timestamp),        
+        #nanoplot - before nanofilt
+        expand("{wd}/output/long_reads/{rs}/{sample}/nanoplot/untrimmed", wd = working_dir, rs = result_folder, sample = samples),
+        #nanofilt
+        expand("{wd}/output/long_reads/{rs}/{sample}/nanofilt/filtered_{sample}.fastq", wd = working_dir, rs = result_folder, sample = samples),
+        #nanoplot - after nanofilt
+        expand("{wd}/output/long_reads/{rs}/{sample}/nanoplot/trimmed", wd = working_dir, rs = result_folder, sample = samples),
+        #centrifuge
+        expand("{wd}/output/long_reads/{rs}/{sample}/centrifuge/{sample}_centrifuge_unpaired.tsv", wd = working_dir, rs = result_folder, sample = samples),
+        #centrifuge kreport
+        expand("{wd}/output/long_reads/{rs}/{sample}/centrifuge/{sample}_kraken2_report.txt", wd = working_dir, rs = result_folder, sample = samples),
+        #krona graph
+        expand("{wd}/output/long_reads/{rs}/{sample}/viz/{sample}_krona.html", wd = working_dir, rs = result_folder, sample = samples), 
+        #list kraken paths 
+        expand("{wd}/output/long_reads/{rs}/kraken_report_paths.txt", wd=working_dir, rs=result_folder),    
+        #OTU table
+        expand("{wd}/output/long_reads/{rs}/otu_table_{lv}.csv", wd=working_dir, lv=level, rs=result_folder),
+        #Alpha diversity
+        expand("{wd}/output/long_reads/{rs}/{sample}/alpha_diversity/{sample}_alpha_diversity.txt", sample=samples, wd=working_dir, rs=result_folder),       
+        #Taxonomy Plot
+        expand("{wd}/output/long_reads/{rs}/{sample}/viz/{sample}_taxplot_{taxlvl}.jpg", wd=working_dir, rs=result_folder, sample=samples, taxlvl=taxonomic_level),
+        #Citation
+        expand("{wd}/output/long_reads/{rs}/long_reads_citation.txt", wd=working_dir, rs=result_folder),
+        
+
+#This rule creates a folder for the results
+include: "rules/long_reads/rule_config_file_long.snake"
+
+#This rule runs nanoplot and generates a report and several visualizations
+include: "rules/long_reads/rule_nanoplot.snake"
+
+#This rule uses nanofilt to filter the reads
+include: "rules/long_reads/rule_nanofilt.snake"
+
+#This rule runs nanoplot after nanofilt and generates a report and several visualizations
+include: "rules/long_reads/rule_nanoplot_after_nanofilt.snake"
+
+#This rule takes the filtered reads and classifies them using centrifuge
+include: "rules/long_reads/rule_centrifuge_unpaired.snake"
+
+#This rule runs after the checkpoint and generates a temp file with the paths to the kraken reports
+include: "rules/long_reads/rule_post_check_rule_long.snake"
+
+#This checkpoint generates a kraken report from the centrifuge output
+include: "rules/long_reads/checkpoint_centrifuge_kreport.snake"
+
+#This rule creates an otu table from the kraken reports
+#using the kraken2OTU.py script
+include: "rules/long_reads/rule_create_otu_table_long.snake"
+
+#This rule calculates alpha diversity based on different indices
+include: "rules/long_reads/rule_calculate_alpha_diversity_long.snake"
+
+#This rule generates a Krona graph from the kreport file
+include: "rules/long_reads/rule_krona_graph_long.snake"
+
+# This rule plots the taxonomy using R
+include: "rules/long_reads/rule_taxonomy_plot_long.snake"
+
+#This rule generates a citation document for the long-reads workflow
+include: "rules/long_reads/rule_citation_long.snake"

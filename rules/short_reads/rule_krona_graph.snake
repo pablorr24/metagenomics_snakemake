@@ -7,5 +7,5 @@ rule krona_graph:
         krona_graph = "{wd}/output/short_reads/{rs}/{sample}/viz/{sample}_krona_graph.html",
     shell:
         """
-        ktImportTaxonomy {input.kraken_report} -o {output.krona_graph}
+        ktImportTaxonomy -t 5 -m 3 {input.kraken_report} -o {output.krona_graph}
         """
