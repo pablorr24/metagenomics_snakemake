@@ -1,0 +1,23 @@
+#Run the post-classification workflow by configuring these file and typing in the terminal
+#snakemake -s Snakefile_post_classification --cores all 
+
+working_directory: /home/pablorr24/snake_folder
+
+#Path to the already classified results from running the full workflow
+classification_results: /home/pablorr24/snake_folder/output/short_reads/FullWorkflow_01-Jun-2024-15
+
+#Metadata
+metadata_path: /home/pablorr24/snake_folder/data/metadata/metadata_example.csv #file with metadata info
+metadata_variable: "Species" #variable used for visualizations
+
+otu_table_recalculation_level: 'F' #not yet implemented
+
+beta_diversity_level: "all" #'all', 'S', 'G', 'F', 'O'
+
+#Create the following visualizations 
+#not yet implemented
+PCoA: "Yes" 
+HEATMAP: "Yes"
+DENDOGRAM: "Yes"
+
+exclude_samples:  #not yet implemeted
