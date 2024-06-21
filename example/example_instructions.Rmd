@@ -1,0 +1,32 @@
+# Example Instructions
+
+This instructions will help you run the `short_read_full_workflow` on 2 different samples. This example assumes you have already installed Snakemake Metagenomics. If you haven’t, go to the `README.md` file and install Snakemake Metagenomics
+
+### Step 1: Download data files
+Download the 4 testing files from the Zenodo repository https://zenodo.org/records/12192110 and move them in the `data/short_reads` folder inside your Snakemake Metagenomics repository
+
+### Step 2: Activate conda environment
+Open the terminal and activate your conda environment. You can do that by typing: `conda activate envname`. If you don’t know the name of your conda environment, you can check by running the command: `conda info –envs`
+
+### Step 3: Download database
+If you haven’t, download a classification database. These are the instructions to download the Silva Database
+Navigate to the databases folder, and run: 
+```
+kraken2-build --special silva --db silvaDB
+```
+Wait for the download to finish and check that the files are located in the database folder.
+
+### Step 4: Edit config file
+Open the configuration file in the example folder called `config_short_reads_full_workflow.yaml` and modify it according to your file paths location
+
+### Step 5: Move config file
+Move the configuration file in this folder to the config_templates folder. Make sure that it replaces the previous file in that folder, as Snakemake requires the specific file name not to change.
+
+### Step 6: Run Snakemake
+Navigate to your main Snakemake Metagenomics folder	
+Once your conda environment is ready, run the command: 
+```
+snakemake -s Snakefile_short_reads_full_workflow --cores all
+```
+### Step 7: Check results
+Look at your results in the `output/short_reads` folder
