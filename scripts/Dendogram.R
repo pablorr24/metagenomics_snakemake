@@ -83,7 +83,3 @@ validate_filenames(args_list[['output']])
 distance_matrix <- process_distance_matrix(args_list[['input']])
 metadata <- handle_metadata(args_list[['metadata']], args_list[['variable']])
 plot_clustering(distance_matrix, metadata, args_list[['variable']])
-
-#Rscript /home/pablorr24/snake_folder/scripts/Dendogram.R --input=beta_diversity_all.csv --output=wolospecie2s --metadata=dataset_metadata.csv --variable=Species
-
-#Rscript /home/pablorr24/snake_folder/scripts/Dendogram.R --input=beta_diversity.csv --output=wolospecie2s --metadata=/home/pablorr24/snake_folder/data/metadata_23Apr.csv --variable=GroupName

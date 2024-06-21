@@ -22,7 +22,6 @@ def kraken_report_paths(wildcards):
     else:
         raise FileNotFoundError("No kraken report paths found.")
 
-
 #Timestamp for resulting folder
 timestamp = time.strftime("%d-%b-%Y-%H", time.localtime())
 #Define result folder with timestamp

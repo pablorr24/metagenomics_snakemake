@@ -7,7 +7,7 @@ import time
 from collections import OrderedDict 
 import re
 
-from scripts.gzip_to_fq import decompress_files #script to decompress .fasta.gz files
+from scripts.gzip_to_fq import decompress_files #script to decompress .fastq.gz files
 
 def decompress_samples_in_path(path_to_samples):
     decompress_files(path_to_samples)
@@ -43,7 +43,7 @@ try:
         raise FileNotFoundError(f"Make sure the sample path is correct \n \n")
 	
 	# Decompress samples in path
-    decompress_samples_in_path(path_to_samples) #in case there are .fasta.gz files in the sample folder
+    decompress_samples_in_path(path_to_samples) #in case there are .fastq.gz files in the sample folder
 
     files = os.listdir(path_to_samples)
     samples = [file.rsplit('.', 1)[0] for file in files if file.endswith('.fastq') or file.endswith('.fq')]

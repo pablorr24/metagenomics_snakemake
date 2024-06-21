@@ -28,7 +28,7 @@ kraken_report <- kraken_report %>%
   ))
 
 # Filter data to display only the selected taxonomic level
-selected_taxonomic_level <- "Phylum"  # Change this to the desired taxonomic level
+selected_taxonomic_level <- "Phylum"
 
 # Filter the data to include only the top 20 taxa with the highest abundance
 kraken_report <- kraken_report %>%

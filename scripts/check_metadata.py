@@ -3,7 +3,6 @@ import os
 import yaml
 import sys
 
-
 def check_metadata_file():
     # Construct the path to the configuration file in the current directory
     config_path = os.path.join(os.getcwd(), 'config_templates/config_post_classification.yaml')
@@ -40,5 +39,5 @@ def check_metadata_file():
 if check_metadata_file():
     pass
 else:
-    sys.exit(1)  # Exit the script with a non-zero status code
+    sys.exit(1)
 

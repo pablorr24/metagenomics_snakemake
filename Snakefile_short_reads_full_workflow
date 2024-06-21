@@ -118,7 +118,7 @@ rule all:
         expand("{wd}/output/short_reads/{rs}/{sample}/kraken2/paired/{sample}_kraken2_output.txt", sample=samples, wd=working_dir, rs=result_folder, level=level),
         #Kraken2 - unpaired
         #expand("{wd}/output/short_reads/{rs}/{sample}/kraken2/unpaired/{sample}_kraken2_report_un.txt", sample=samples, wd=working_dir, rs=result_folder),
-        #expand("{wd}/output/short_reads/{rs}/{sample}/kraken2/unpaired/{sample}_kraken2_output_un.txt", sample=samples, wd=working_dir, rs=result_folder)
+        #expand("{wd}/output/short_reads/{rs}/{sample}/kraken2/unpaired/{sample}_kraken2_output_un.txt", sample=samples, wd=working_dir, rs=result_folder),
         #Krona graph
         expand("{wd}/output/short_reads/{rs}/{sample}/viz/{sample}_krona_graph.html", wd=working_dir, ts=timestamp, rs=result_folder, sample=samples),
         #Taxonomy Plot

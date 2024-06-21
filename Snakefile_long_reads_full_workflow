@@ -62,7 +62,7 @@ try:
         sys.stderr.write(f"\nError: The db path '{db_path}' does not exist.\n")
         raise FileNotFoundError(f"Make sure the database path is correct \n \n")
 
-    decompress_samples_in_path(path_to_samples) #in case there are .fasta.gz files in the sample folder
+    decompress_samples_in_path(path_to_samples) #in case there are .fastq.gz files in the sample folder
 
     files = os.listdir(path_to_samples)
     samples = [file.rsplit('.', 1)[0] for file in files if file.endswith('.fastq') or file.endswith('.fq')]

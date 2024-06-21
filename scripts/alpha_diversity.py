@@ -62,7 +62,6 @@ def main():
     S = len(n)  # Total number of species
     p = [i / N for i in n if i != 0]  # Proportions
     D = sum(i * (i - 1) for i in n) / (N * (N - 1))  # Simpson's index base calculation
-    
 
     if args.output_file:
         output_filename = args.output_file

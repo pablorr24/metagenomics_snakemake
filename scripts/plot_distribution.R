@@ -2,7 +2,6 @@
 
 args <- commandArgs(trailingOnly=TRUE)
 
-# Check if the correct number of command line arguments is provided
 if (length(args) != 4) {
   stop("Usage: Rscript plot_distribution.R input_csv output_plot.png")
 }
