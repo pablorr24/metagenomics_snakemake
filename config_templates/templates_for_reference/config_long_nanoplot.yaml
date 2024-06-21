@@ -1,7 +1,0 @@
-#Run the long-reads QC-only workflow by configuring these file and typing in the terminal
-#snakemake -s Snakefile_nanoplot --cores all 
-
-working_directory: /home/pablorr24/snake_folder
-
-sample_path: /home/pablorr24/Documents/benchmarking_files/long_reads_benchmarking/data #/10_zymo_ont.fastq
-
