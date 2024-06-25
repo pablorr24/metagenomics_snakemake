@@ -47,7 +47,7 @@ conda activate snakemake_meta
 
 ## Update Krona Taxonomy
 
-Before runnung the analysis, the updateTaxonomy.sh file must be run. Navigate to ```home/miniconda3/envs/snakemake_metagenomics/opt/krona```. And run 
+Before runnung the analysis, you must update the Krona Taxonomy. Navigate to ```home/miniconda3/envs/snakemake_metagenomics/opt/krona``` and run 
 ```
  ./updateTaxonomy.sh
 ```
