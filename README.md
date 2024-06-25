@@ -11,7 +11,8 @@ This program consists of 3 workflows: short-reads classification, long-reads cla
 
 The figure below shows the general steps of each workflow. For a detailed view of the steps in each workflow, check the **workflow_summary.md** file. 
 
-![image](https://github.com/pablorr24/metagenomics_snakemake/assets/92135285/5898c242-0122-449a-b0a4-f6aa98fde5bf)
+![image](https://github.com/pablorr24/metagenomics_snakemake/assets/92135285/c98ff5f7-e1ba-4799-934f-faf9400cb25d)
+
 
 
 ## Prerequisites
