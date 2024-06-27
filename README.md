@@ -59,7 +59,7 @@ Before runnung the analysis, you must update the Krona Taxonomy. Navigate to ```
 This process may take a couple of minutes.
 
 ## Short-reads database installation
-If you already have access to a classification database such as Silva, Greengenes, or Kraken2, you can skip the installation step. Otherwise, make sure you install a database. The following instructions will download and install the Silva and Greengenes databases.
+If you already have access to a classification database such as Silva, Greengenes, or Kraken2, you can skip the installation step. Otherwise, make sure you install a database. The following instructions will download and install the Silva and Greengenes databases. Navigate to the your main folder and run:
 
 ```
 cd databases/
