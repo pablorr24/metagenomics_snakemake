@@ -51,7 +51,7 @@ Every new time you want to run Snakemake metagenomics, make sure to activate the
 
 ## Update Krona Taxonomy
 
-Before runnung the analysis, you must update the Krona Taxonomy. Navigate to ```home/miniconda3/envs/snakemake_metagenomics/opt/krona``` and run 
+Before runnung the analysis, you must update the Krona Taxonomy. Navigate to ```home/miniconda3/envs/snakemake_meta/opt/krona``` and run 
 ```
  ./updateTaxonomy.sh
 ```
