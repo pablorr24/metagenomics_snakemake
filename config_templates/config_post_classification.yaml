@@ -1,13 +1,15 @@
 #Run the post-classification workflow by configuring these file and typing in the terminal
 #snakemake -s Snakefile_post_classification --cores all 
 
-working_directory: /home/snakemake_metagenomics
+#working_directory: /home/snakemake_metagenomics
+working_directory: /home/pablorr24/snake_folder
 
 #Path to the already classified results from running the full workflow
-classification_results: /home/snakemake_metagenomics/output/short_reads/FullWorkflow_24-Apr-2024-23
+#classification_results: /home/snakemake_metagenomics/output/short_reads/FullWorkflow_24-Apr-2024-23
+classification_results: /home/pablorr24/Documents/results_benchmarking/short_reads/workflow/FullWorkflow_06-Jun-2024-03
 
 #Metadata
-metadata_path: /home/snakemake_metagenomics/data/metadata_example.csv #file with metadata info
+metadata_path: /home/pablorr24/snake_folder/data/metadata/metadata_6_samples.csv #file with metadata info
 metadata_variable: "GroupName" #variable used for visualizations
 
 otu_table_recalculation_level: 'F' #not yet implemented

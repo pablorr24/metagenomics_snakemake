@@ -1,11 +1,12 @@
 #Run the long-reads full workflow by configuring these file and typing in the terminal
-#snakemake -s Snakefile_long_read_full_workflow --cores all 
+#snakemake -s Snakefile_long_reads_full_workflow --cores all 
+working_directory: /home/pablorr24/snake_folder
 
-working_directory: /home/snakemake_metagenomics
+sample_path: /home/pablorr24/snake_folder/data/long_reads
 
-database_path: /home/snakemake_metagenomics/databases/silva/centrifuge
 
-sample_path: /home/snakemake_metagenomics/data/long_reads
+database_path: /home/pablorr24/snake_folder/databases/silva/centrifuge
+prefix: ex_silva
 
 nanofilt_parameters:
   LENGTH: 50 #default=0
