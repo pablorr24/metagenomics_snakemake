@@ -43,6 +43,7 @@ cd metagenomics_snakemake
 conda env create -f environment.yml -n snakemake_meta
 conda activate snakemake_meta
 ```
+Every new time you want to run Snakemake metagenomics, make sure to activate the conda environment with *conda activate snakemake_meta*
 
 ## Update Krona Taxonomy
 
