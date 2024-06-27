@@ -72,7 +72,7 @@ For long-read sequences, Centrifuge requires a different database configuration.
 
 ```
 centrifuge-download -o taxonomy taxonomy
-wget -O https://genome-idx.s3.amazonaws.com/centrifuge/p_compressed_2018_4_15.tar.gz
+wget https://genome-idx.s3.amazonaws.com/centrifuge/p_compressed_2018_4_15.tar.gz
 tar -xzvf https://genome-idx.s3.amazonaws.com/centrifuge/p_compressed_2018_4_15.tar.gz -C /database/centrifuge_db/
 ```
 
