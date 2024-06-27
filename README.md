@@ -17,7 +17,11 @@ The figure below shows the general steps of each workflow. For a detailed view o
 
 ## Prerequisites
 
-This installation requires git and conda/miniconda. If they are already installed, skip these steps, otherwise install them they with the following steps:
+This installation requires git and conda/miniconda. If they are already installed, skip these steps. To check if you have git and miniconda/conda installed, type
+```git --version```
+```conda --version```
+
+If you need to install them, follow these steps:
 
 Git Installation: \
 ```sudo apt install git```
