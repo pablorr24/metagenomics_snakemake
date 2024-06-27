@@ -39,7 +39,7 @@ After installing, initialize your newly-installed Miniconda. The following comma
 
 ```
 git clone https://github.com/pablorr24/metagenomics_snakemake/
-cd metagenomics/Snakemake
+cd metagenomics_snakemake
 conda env create -f environment.yml -n snakemake_meta
 conda activate snakemake_meta
 ```
