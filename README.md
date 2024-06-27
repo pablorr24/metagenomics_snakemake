@@ -11,12 +11,17 @@ This program consists of 3 workflows: short-reads classification, long-reads cla
 
 The figure below shows the general steps of each workflow. For a detailed view of the steps in each workflow, check the **workflow_summary.md** file. 
 
-![image](https://github.com/pablorr24/metagenomics_snakemake/assets/92135285/5898c242-0122-449a-b0a4-f6aa98fde5bf)
+![image](https://github.com/pablorr24/metagenomics_snakemake/assets/92135285/c98ff5f7-e1ba-4799-934f-faf9400cb25d)
+
 
 
 ## Prerequisites
 
-This installation requires git and conda/miniconda. If they are already installed, skip these steps, otherwise install them they with the following steps:
+This installation requires git and conda/miniconda. If they are already installed, skip these steps. To check if you have git and miniconda/conda installed, type
+```git --version```
+```conda --version```
+
+If you need to install them, follow these steps:
 
 Git Installation: \
 ```sudo apt install git```
@@ -26,7 +31,6 @@ Miniconda Installation:
 mkdir -p ~/miniconda3
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
 bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
-After installing, initialize your newly-installed Miniconda. The following commands initialize for bash and zsh shells:zrm -rf ~/miniconda3/miniconda.sh
 ```
 
 After installing, initialize your newly-installed Miniconda. The following commands initialize for bash and zsh shells:
@@ -39,14 +43,15 @@ After installing, initialize your newly-installed Miniconda. The following comma
 
 ```
 git clone https://github.com/pablorr24/metagenomics_snakemake/
-cd metagenomics/Snakemake
+cd metagenomics_snakemake
 conda env create -f environment.yml -n snakemake_meta
 conda activate snakemake_meta
 ```
+Every new time you want to run Snakemake metagenomics, make sure to activate the conda environment with ```conda activate snakemake_meta```
 
 ## Update Krona Taxonomy
 
-Before runnung the analysis, the updateTaxonomy.sh file must be run. Navigate to ```home/miniconda3/envs/snakemake_metagenomics/opt/krona```. And run 
+Before runnung the analysis, you must update the Krona Taxonomy. Navigate to ```home/miniconda3/envs/snakemake_metagenomics/opt/krona``` and run 
 ```
  ./updateTaxonomy.sh
 ```
@@ -63,40 +68,43 @@ kraken2-build --special greengenes --db greengenesDB
 ```
 
 ## Long-reads database installation 
-For long-read sequences, Centrifuge requires a different database configuration.  If you are using RefSeq, follow these steps:
+For long-read sequences, Centrifuge requires a different database configuration. The following steps download the Centrifuge (compressed) database.
 
 ```
+centrifuge-download -o taxonomy taxonomy
+wget -O https://genome-idx.s3.amazonaws.com/centrifuge/p_compressed_2018_4_15.tar.gz
+tar -xzvf https://genome-idx.s3.amazonaws.com/centrifuge/p_compressed_2018_4_15.tar.gz -C /database/centrifuge_db/
 ```
 
-You can also configure a custom database in Centrifuge. This requires a detailed installation. Consult the official documentation for detailed information. The following example will show how to build the previously installed Silva database for use in Centrifuge.
+After this, you will see several files with the format db_centrifuge#.cf, where db_centrifuge is the prefix. This prefix will be important later, as it must match the parameter ‘prefix’ in your configuration file. Navigate to the folder where the Silva database is located and type the following command:
 
-Navigate to the folder where the Silva database is located and type the following command:
+You can also adapt a previously installed database to work with Centrifuge. The following example shows how to build the previously installed Silva database for use by Centrifuge.
+
 ```
 centrifuge-build --conversion-table seqid2taxid.map --taxonomy-tree taxonomy/nodes.dmp --name-table taxonomy/names.dmp library/combined_sequences.fna silva_centrifuge
 ```
-This command will generate several files with the format ‘silva_centrifuge.#.cf’, where silva_centeifuge is the prefix you chose on the previous command. This prefix must match the config file parameter ‘prefix’. Other databases may have slightly different file names, but they tend to follow the same naming conventions and file types.
-
+This command will generate the .cf files that will become the prefix on the configuration file. Note that the file names may change, but they generally follow the previous format.
 
 ### Running a workflow 
 
-For details on the steps of each workflow, see the **workflow_summary.md** file
+For details on the steps of each workflow, see the **workflow_summary.md** file. You can also follow the example in the /example folder.
 
 To run a workflow, first modify the configuration file and adjust to your parameters. Afterwards, run Snakemake.
 Note: Make sure you are in the working directory (specified in the config file)
 
 ### Short-reads
 QC-only: ```snakemake -s Snakefile_fastqc --cores all``` \
-Classification Workflow: ```snakemake -s Snakefile_full_workflow --cores all``` 
+Classification Workflow: ```snakemake -s Snakefile_short_reads_full_workflow --cores all``` 
 
 ### Long-reads
 QC-only:```snakemake -s Snakefile_nanoplot --cores all``` \
-Classification Workflow:```snakemake -s Snakefile_long_read --cores all``` 
+Classification Workflow:```snakemake -s Snakefile_long_reads_full_workflow --cores all``` 
 
 ### Post Classification Workflow
 **Metadata File** (only for post-classification workflow) \
 The post-classification workflow requires a metadata file, with one row per sample, and different columns specifying specific sample variables (sample location, species, etc). Please update this file before running the analysis
 
-```snakemake -s Snakefile_post_analysis --cores all``` 
+```snakemake -s Snakefile_post_classification --cores all``` 
 
 ### Output 
 
