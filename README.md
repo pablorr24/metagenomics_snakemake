@@ -73,7 +73,7 @@ For long-read sequences, Centrifuge requires a different database configuration.
 ```
 centrifuge-download -o taxonomy taxonomy
 wget https://genome-idx.s3.amazonaws.com/centrifuge/p_compressed_2018_4_15.tar.gz
-tar -xzvf https://genome-idx.s3.amazonaws.com/centrifuge/p_compressed_2018_4_15.tar.gz -C /database/centrifuge_db/
+tar -xzvf genome-idx.s3.amazonaws.com/centrifuge/p_compressed_2018_4_15.tar.gz -C /database/centrifuge_db/
 ```
 
 After this, you will see several files with the format db_centrifuge#.cf, where db_centrifuge is the prefix. This prefix will be important later, as it must match the parameter ‘prefix’ in your configuration file. Navigate to the folder where the Silva database is located and type the following command:
