@@ -51,7 +51,7 @@ Every new time you want to run Snakemake metagenomics, make sure to activate the
 
 ## Update Krona Taxonomy
 
-Before runnung the analysis, you must update the Krona Taxonomy. Navigate to ```home/miniconda3/envs/snakemake_metagenomics/opt/krona``` and run 
+Before runnung the analysis, you must update the Krona Taxonomy. Navigate to ```home/miniconda3/envs/snakemake_meta/opt/krona``` and run 
 ```
  ./updateTaxonomy.sh
 ```
@@ -59,7 +59,7 @@ Before runnung the analysis, you must update the Krona Taxonomy. Navigate to ```
 This process may take a couple of minutes.
 
 ## Short-reads database installation
-If you already have access to a classification database such as Silva, Greengenes, or Kraken2, you can skip the installation step. Otherwise, make sure you install a database. The following instructions will download and install the Silva and Greengenes databases.
+If you already have access to a classification database such as Silva, Greengenes, or Kraken2, you can skip the installation step. Otherwise, make sure you install a database. The following instructions will download and install the Silva and Greengenes databases. Navigate to the your main folder and run:
 
 ```
 cd databases/
@@ -72,8 +72,8 @@ For long-read sequences, Centrifuge requires a different database configuration.
 
 ```
 centrifuge-download -o taxonomy taxonomy
-wget -O https://genome-idx.s3.amazonaws.com/centrifuge/p_compressed_2018_4_15.tar.gz
-tar -xzvf https://genome-idx.s3.amazonaws.com/centrifuge/p_compressed_2018_4_15.tar.gz -C /database/centrifuge_db/
+wget https://genome-idx.s3.amazonaws.com/centrifuge/p_compressed_2018_4_15.tar.gz
+tar -xzvf genome-idx.s3.amazonaws.com/centrifuge/p_compressed_2018_4_15.tar.gz -C /database/centrifuge_db/
 ```
 
 After this, you will see several files with the format db_centrifuge#.cf, where db_centrifuge is the prefix. This prefix will be important later, as it must match the parameter ‘prefix’ in your configuration file. Navigate to the folder where the Silva database is located and type the following command:
