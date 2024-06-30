@@ -20,6 +20,7 @@ kraken_report <- kraken_report %>%
     TaxLevel == "F" ~ "Family",
     TaxLevel == "G" ~ "Genus",
     TaxLevel == "P" ~ "Phylum",
+    TaxLevel == "S" ~ "Species",
     TaxLevel == "U" ~ "Unassigned",
     TaxLevel == "O" ~ "Order",
     TaxLevel == "R" ~ "Root",
@@ -27,8 +28,9 @@ kraken_report <- kraken_report %>%
     TRUE ~ as.character(TaxLevel)  # Default for other cases
   ))
 
-# Filter data to display only the selected taxonomic level
-selected_taxonomic_level <- "Phylum"
+# Get the selected taxonomic level from the arguments
+taxonomic_level_map <- c("C" = "Class", "F" = "Family", "G" = "Genus", "P" = "Phylum", "S" = "Species", "U" = "Unassigned", "O" = "Order", "R" = "Root", "D" = "Domain")
+selected_taxonomic_level <- taxonomic_level_map[[args[3]]]
 
 # Filter the data to include only the top 20 taxa with the highest abundance
 kraken_report <- kraken_report %>%

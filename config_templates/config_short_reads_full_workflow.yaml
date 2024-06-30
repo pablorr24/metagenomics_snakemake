@@ -1,18 +1,18 @@
 #Run the short-reads full workflow by configuring these file and typing in the terminal
 #snakemake -s Snakefile_short_reads_full_workflow --cores all 
 
-working_directory: /home/snakemake_metagenomics
+working_directory: /home/pablorr24/snake_folder
 
-database_path: /home/snakemake_metagenomics/databases/silva
+database_path: /home/pablorr24/snake_folder/databases/silva
 
-sample_path: /home/snakemake_metagenomics/data/short_reads
+sample_path: /home/pablorr24/snake_folder/data/short_reads
 
 trimmomatic_params:
   LEADING: 3
   TRAILING: 3
   SLIDINGWINDOW: "4:15"
   MINLEN: 36
-  ADAPTERS: /home/snakemake_metagenomics/adapters/TruSeq3-SE.fa #if no adapters are used, select 'None'
+  ADAPTERS: /home/pablorr24/snake_folder/adapters/TruSeq3-SE.fa #if no adapters are used, select 'None'
 
 kraken_paired: true 
  
