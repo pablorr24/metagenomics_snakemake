@@ -1,4 +1,4 @@
-# Snakemake Metagenomics Workflow
+# MetaSnake Workflow
 
 ## Summary:
 
